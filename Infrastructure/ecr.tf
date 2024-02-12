@@ -30,7 +30,7 @@ resource "null_resource" "run_comand_two" {
   }
 }
 resource "null_resource" "run_comand_three" {
-  depends_on = [ null_resource.two]
+  depends_on = [ null_resource.run_comand_two]
   
   provisioner "local-exec" {
     command = <<-EOT
