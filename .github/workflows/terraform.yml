@@ -37,7 +37,8 @@ jobs:
         run: ls
 
       - name: credentials on cli
-        run: bash .github/workflows/commands.sh
+        # run: bash '../.github/'.github/workflows/commands.sh
+        run: bash ../.github/workflows/commands.sh
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
