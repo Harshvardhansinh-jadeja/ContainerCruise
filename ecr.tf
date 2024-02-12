@@ -2,10 +2,6 @@ resource "aws_ecr_repository" "harshvardhan-repo" {
   name = "harshvardhan-repo" 
 }
 
-output "repo_name" {
-  value = aws_ecr_repository.harshvardhan-repo.repository_url
-} 
-
 resource "null_resource" "run_comand_one" {
   depends_on = [ aws_ecr_repository.harshvardhan-repo ]
   provisioner "local-exec" {
