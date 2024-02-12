@@ -21,9 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: List Files
-        run: ls
-
       - name: install Terraform
         run: |
           wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
@@ -32,9 +29,6 @@ jobs:
 
       - name: initialize terraform
         run: terraform init
-
-      - name: List Files
-        run: ls
 
       - name: credentials on cli
         # run: bash '../.github/'.github/workflows/commands.sh
@@ -46,9 +40,5 @@ jobs:
       - name: plan terraform
         run: "terraform plan"
 
-      # - name: Apply resources
-      #   run: terraform apply -auto-approve
-      #   env:
-      #     #   TF_VAR_profile: "harsh"
-      #     TF_VAR_region: "us-west-2"
-      #     TF_VAR_account_id: 831794387446
+      - name: Apply resources
+        run: terraform apply -auto-approve
