@@ -2,11 +2,20 @@ resource "aws_ecr_repository" "harshvardhan-repo" {
   name = "harshvardhan-repo" 
 }
 
+# resource "null_resource" "run_comand_one" {
+#   depends_on = [ aws_ecr_repository.harshvardhan-repo ]
+#   provisioner "local-exec" {
+#     command = <<-EOT
+#        aws ecr get-login-password --region ${var.region} --profile ${var.profile} | docker login --username AWS --password-stdin ${var.account_id}.dkr.ecr.${var.region}.amazonaws.com
+#   EOT
+#   EOT
+#   }
+# }
 resource "null_resource" "run_comand_one" {
   depends_on = [ aws_ecr_repository.harshvardhan-repo ]
   provisioner "local-exec" {
     command = <<-EOT
-       aws ecr get-login-password --region ${var.region} --profile ${var.profile} | docker login --username AWS --password-stdin ${var.account_id}.dkr.ecr.${var.region}.amazonaws.com
+       aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${var.account_id}.dkr.ecr.${var.region}.amazonaws.com
   EOT
   }
 }
@@ -21,7 +30,7 @@ resource "null_resource" "run_comand_two" {
   }
 }
 resource "null_resource" "run_comand_three" {
-  depends_on = [ null_resource.run_comand_two]
+  depends_on = [ null_resource.two]
   
   provisioner "local-exec" {
     command = <<-EOT
