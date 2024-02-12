@@ -28,7 +28,7 @@ jobs:
         run: terraform init
 
       - name: credentials on cli
-        run: bash /Infrastructure/commands.sh
+        run: bash .github/workflows/commands.sh
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
