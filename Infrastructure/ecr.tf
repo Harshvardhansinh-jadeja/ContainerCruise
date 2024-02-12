@@ -12,7 +12,16 @@ resource "null_resource" "run_comand_one" {
 }
 
 resource "null_resource" "run_comand_two" {
-  depends_on = [ aws_ecr_repository.harshvardhan-repo ]
+  depends_on = [null_resource.run_comand_one]
+  
+  provisioner "local-exec" {
+    command = <<-EOT
+      docker build -t ${var.local-image} ../code
+  EOT
+  }
+}
+resource "null_resource" "run_comand_three" {
+  depends_on = [ null_resource.run_comand_two]
   
   provisioner "local-exec" {
     command = <<-EOT
@@ -20,8 +29,8 @@ resource "null_resource" "run_comand_two" {
   EOT
   }
 }
-resource "null_resource" "run_comand_three" {
-  depends_on = [ aws_ecr_repository.harshvardhan-repo ]
+resource "null_resource" "run_comand_four" {
+  depends_on = [ null_resource.run_comand_three ]
 
   provisioner "local-exec" {
     command = <<-EOT

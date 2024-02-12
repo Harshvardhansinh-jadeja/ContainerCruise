@@ -11,7 +11,7 @@ variable "region" {
 
 variable "container-port" {
   type = number
-  default = 80
+  default = 3000
   
 }
 
@@ -25,11 +25,11 @@ variable "account_id" {
 }
 variable "local-image" {
   type = string
-  default = "nginxdemos/hello"
+  default = "containercruise"
 }
 
 # we used this because it was giving me error when we give container name which contains slash
 variable "container-name" {
   type = string
-  default = "nginxdemos"
+  default = "containercruise"
 }
