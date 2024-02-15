@@ -1,7 +1,7 @@
-# variable "profile" {
-#   type = string
-#   # default = "harsh" 
-# }
+variable "profile" {
+  type = string
+  # default = "harsh" 
+}
 variable "region" {
   type = string
   # default = "us-west-2"
