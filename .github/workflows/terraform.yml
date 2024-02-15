@@ -15,7 +15,7 @@ jobs:
     env:
       #   TF_VAR_profile: "harsh"
       TF_VAR_region: "us-west-2"
-      TF_VAR_account_id: 831794387446
+      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
 
     steps:
       - name: Checkout
@@ -27,15 +27,17 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install terraform
 
-      - name: initialize terraform
-        run: terraform init
-
       - name: credentials on cli
         # run: bash '../.github/'.github/workflows/commands.sh
         run: bash ../.github/workflows/commands.sh
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_REGION: "us-west-2"
+          AWS_PROFILE: "harsh"
+
+      - name: initialize terraform
+        run: terraform init
 
       - name: plan terraform
         run: "terraform plan"
