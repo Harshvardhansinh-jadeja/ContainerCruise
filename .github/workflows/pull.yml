@@ -92,6 +92,47 @@ jobs:
         working-directory: ./Infrastructure
         run: "terraform plan"
 
+  Push:
+    defaults:
+      run:
+        working-directory: ./Infrastructure
+    env:
+      TF_VAR_profile: "harsh"
+      TF_VAR_region: "us-west-2"
+      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+
+    if: ${{github.event_name == 'push'}}
+    environment: dev
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: install Terraform
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install terraform
+
+      - name: credentials on cli
+        run: bash ../.github/workflows/commands.sh
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_REGION: "us-west-2"
+          AWS_PROFILE: "harsh"
+
+      - name: initialize terraform
+        working-directory: ./Infrastructure
+        run: terraform init
+
+      - name: plan terraform
+        working-directory: ./Infrastructure
+        run: "terraform plan"
+
       - name: apply terraform
         if: ${{github.event_name == 'push'}}
         run: echo "Apply terraform"
