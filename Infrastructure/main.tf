@@ -8,5 +8,5 @@ provider "aws" {
 
 data "aws_iam_role" "task_exec-role" {
   name = "ecsTaskExecutionRole"
-  # name = "AmazonECSTaskExecutionRole"
+
 }
