@@ -59,7 +59,7 @@ jobs:
       TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
 
     needs: path
-    if: ${{ needs.path.outputs.infra == 'true' }}
+    if: ${{ needs.path.outputs.infra == 'true' }} || ${{github.event_name == 'push'}}
     environment: dev
 
     runs-on: ubuntu-latest
@@ -90,3 +90,7 @@ jobs:
       - name: plan terraform
         working-directory: ./Infrastructure
         run: "terraform plan"
+
+      - name: apply terraform
+        if: ${{github.event_name == 'push'}}
+        run: echo "Apply terraform"
