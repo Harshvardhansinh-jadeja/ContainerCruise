@@ -135,4 +135,4 @@ jobs:
 
       - name: apply terraform
         if: ${{github.event_name == 'push'}}
-        run: echo "Apply terraform"
+        run: terraform apply -auto-approve

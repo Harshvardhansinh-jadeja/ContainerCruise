@@ -10,6 +10,7 @@ resource "aws_subnet" "harshvardhan-private-subnet-2" {
   vpc_id = aws_vpc.harshvardhan-vpc.id
   cidr_block = "10.0.1.0/24"
    availability_zone = "us-west-2b"
+  #  availability_zone = "us-west-2a"
    tags = {
     Name = "harshvardhan-private-subnet-2"
   }
