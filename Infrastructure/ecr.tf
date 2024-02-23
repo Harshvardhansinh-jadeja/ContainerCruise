@@ -10,6 +10,7 @@ resource "aws_ecr_repository" "harshvardhan-repo" {
 #        aws ecr get-login-password --region ${var.region} --profile ${var.profile} | docker login --username AWS --password-stdin ${var.account_id}.dkr.ecr.${var.region}.amazonaws.com
 #   EOF
 #   }
+
 # }
 resource "null_resource" "run_comand_one" {
   depends_on = [ aws_ecr_repository.harshvardhan-repo ]
