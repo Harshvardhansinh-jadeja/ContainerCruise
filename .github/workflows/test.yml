@@ -1,19 +1,19 @@
 name: Dorny
-
 on:
   push:
     branches:
       - dev
 
 jobs:
-  path:
+  changes:
     runs-on: ubuntu-latest
     outputs:
-      infra: ${{ steps.filter.outputs.infra }}
-      frontend: ${{ steps.filter.outputs.frontend }}
+      frontend: ${{ steps.changes.outputs.frontend }}
+      infra: ${{ steps.changes.outputs.infra }}
     steps:
-      - uses: dorny/paths-filter@v3
-        id: filter
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
         with:
           filters: |
             frontend:
@@ -21,67 +21,18 @@ jobs:
             infra:
               - 'Infrastructure/**'
 
-  Build:
-    defaults:
-      run:
-        working-directory: ./code
-    needs: path
-    if: ${{ needs.path.outputs.frontend == 'true' }}
-
+  frontend:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: dev
+      - name: Print Frontend
+        run: echo "Frontend"
 
-      - name: Install NPM
-        run: sudo apt install npm
-
-      - name: Install Packages
-        run: npm install
-
-      - name: Build app
-        run: npm run build
-
-  Infra:
-    defaults:
-      run:
-        working-directory: ./Infrastructure
-    env:
-      TF_VAR_profile: "harsh"
-      TF_VAR_region: "us-west-2"
-      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
-
-    needs: path
-    if: ${{ needs.path.outputs.infra == 'true' }}
-    environment: dev
-
+  infra:
+    needs: changes
+    if: ${{ needs.changes.outputs.infra == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: dev
-
-      - name: install Terraform
-        run: |
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install terraform
-
-      - name: credentials on cli
-        run: bash ../.github/workflows/commands.sh
-        env:
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          AWS_REGION: "us-west-2"
-          AWS_PROFILE: "harsh"
-
-      - name: initialize terraform
-        working-directory: ./Infrastructure
-        run: terraform init
-
-      - name: plan terraform
-        working-directory: ./Infrastructure
-        run: "terraform plan"
+      - uses: actions/checkout@v3
+      - run: echo "Changed Infra"
