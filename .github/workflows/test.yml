@@ -1,8 +1,6 @@
 name: Dorny
 on:
-  push:
-    branches:
-      - dev
+  workflow_dispatch:
 
 jobs:
   changes:
