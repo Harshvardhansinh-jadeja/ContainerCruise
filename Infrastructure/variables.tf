@@ -49,3 +49,6 @@ variable "db_port" {
   type = number
   default = 5432
 }
+locals {
+  repo_url= aws_ecr_repository.harshvardhan-repo.name
+}

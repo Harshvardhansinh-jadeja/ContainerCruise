@@ -85,7 +85,7 @@ resource "aws_vpc_security_group_ingress_rule" "ingress-rds-EC2_instance" {
   from_port         = var.db_port
   ip_protocol       = "tcp"
   to_port           = var.db_port
-  cidr_ipv4 =  "${aws_instance.harshvardhan-bastion.private_ip}/32"
+  cidr_ipv4 =  local.bastion_private_ip
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4-rds" {
