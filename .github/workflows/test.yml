@@ -10,8 +10,8 @@ jobs:
       frontend: ${{ steps.changes.outputs.frontend }}
       infra: ${{ steps.changes.outputs.infra }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
@@ -25,7 +25,7 @@ jobs:
     if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: echo "HELLO FRONTEND"
 
   infra:
