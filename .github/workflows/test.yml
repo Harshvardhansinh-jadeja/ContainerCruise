@@ -1,8 +1,7 @@
-name: Dorny
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   changes:
@@ -11,8 +10,8 @@ jobs:
       frontend: ${{ steps.changes.outputs.frontend }}
       infra: ${{ steps.changes.outputs.infra }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
@@ -21,13 +20,13 @@ jobs:
             infra:
               - 'Infrastructure/**'
 
-  frontend:
+  src:
     needs: changes
     if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Print Frontend
-        run: echo "Frontend"
+      - uses: actions/checkout@v3
+      - run: echo "HELLO FRONTEND"
 
   infra:
     needs: changes
@@ -35,4 +34,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: echo "Changed Infra"
+      - run: echo "HELLO INFRA"
