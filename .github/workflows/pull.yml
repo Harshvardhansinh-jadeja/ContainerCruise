@@ -24,7 +24,7 @@ jobs:
         with:
           filters: |
             frontend:
-              - 'code/**'
+              - 'auth/**'
             infra:
               - 'Infrastructure/**'
 
@@ -33,7 +33,7 @@ jobs:
     if: ${{ needs.path.outputs.frontend == 'true' }}
     defaults:
       run:
-        working-directory: ./code
+        working-directory: ./auth
 
     runs-on: ubuntu-latest
     steps:
