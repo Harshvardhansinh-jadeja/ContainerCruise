@@ -69,7 +69,7 @@ resource "aws_ecs_service" "harshvardhan-service" {
   }
 
   network_configuration {
-    subnets = [aws_subnet.harshvardhan-private-subnet.id,aws_subnet.harshvardhan-private-subnet-2.id]
+    subnets = [aws_subnet.harshvardhan-private-subnets[0].id,aws_subnet.harshvardhan-private-subnets[1].id]
     security_groups = [aws_security_group.harshvardhan-ecs-sg.id]
   }
 

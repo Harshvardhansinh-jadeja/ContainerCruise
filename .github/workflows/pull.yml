@@ -1,17 +1,17 @@
-name: Build
+name: Pull Request
 
 on:
   pull_request:
     branches:
       - dev
-  push:
-    branches:
-      - dev
-    paths:
-      - Infrastructure/**
+  # push:
+  #   branches:
+  #     - dev
+  #   paths:
+  #     - Infrastructure/**
+
 jobs:
   path:
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
@@ -92,55 +92,3 @@ jobs:
 
       - name: plan terraform
         run: "terraform plan"
-
-      - name: apply terraform
-        if: ${{ github.event_name == 'push' }}
-        # run: terraform apply -auto-approve
-        run: echo "Should we apply ${{github.event_name == 'push'}}"
-
-      - name: Infra is true or not?
-        run: echo "Infra is true or not? ${{ needs.path.outputs.infra }}"
-
-  Push:
-    defaults:
-      run:
-        working-directory: ./Infrastructure
-    env:
-      TF_VAR_profile: "harsh"
-      TF_VAR_region: "us-west-2"
-      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
-      TF_VAR_username: ${{secrets.RDS_USERNAME}}
-      TF_VAR_password: ${{secrets.RDS_PASSWORD}}
-
-    if: ${{github.event_name == 'push'}}
-    environment: dev
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: dev
-
-      - name: install Terraform
-        run: |
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install terraform
-
-      - name: credentials on cli
-        run: bash ../.github/workflows/commands.sh
-        env:
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          AWS_REGION: "us-west-2"
-          AWS_PROFILE: "harsh"
-
-      - name: initialize terraform
-        run: terraform init
-
-      - name: plan terraform
-        run: "terraform plan"
-
-      - name: apply terraform
-        run: echo "APPLY"

@@ -65,12 +65,12 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4-ecs" {
 
 # AMAZON RDS 
 resource "aws_security_group" "harshvardhan-rds-sg" {
-  name        = "harshvardhan-rds-sg"
-  description = "allow traffic for RDS"
-  vpc_id      = aws_vpc.harshvardhan-vpc.id
-  tags = {
-    Name = "harshvardhan-RDS-sg"
-  }
+    name        = "harshvardhan-rds-sg"
+    description = "allow traffic for RDS"
+    vpc_id      = aws_vpc.harshvardhan-vpc.id
+    tags = {
+      Name = "harshvardhan-RDS-sg"
+    }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "ingress-rds-ecs" {
