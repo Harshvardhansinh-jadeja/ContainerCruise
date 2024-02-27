@@ -27,6 +27,7 @@ jobs:
         run: npm run build
 
   Deploy:
+    needs: Build
     defaults:
       run:
         working-directory: ./Infrastructure
