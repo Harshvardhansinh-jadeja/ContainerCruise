@@ -5,29 +5,29 @@ on:
     branches: "dev"
 
 jobs:
-  Build:
-    defaults:
-      run:
-        working-directory: ./code
+  # Build:
+  #   defaults:
+  #     run:
+  #       working-directory: ./code
 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: dev
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: dev
 
-      - name: Install NPM
-        run: sudo apt install npm
+  #     - name: Install NPM
+  #       run: sudo apt install npm
 
-      - name: Install Packages
-        run: npm install
+  #     - name: Install Packages
+  #       run: npm install
 
-      - name: Build app
-        run: npm run build
+  #     - name: Build app
+  #       run: npm run build
 
   Deploy:
-    needs: Build
+    # needs: Build
     defaults:
       run:
         working-directory: ./Infrastructure
