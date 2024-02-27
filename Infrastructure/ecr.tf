@@ -1,5 +1,6 @@
 resource "aws_ecr_repository" "harshvardhan-repo" {
   name = "harshvardhan-repo" 
+  force_delete = true
 }
 
 
