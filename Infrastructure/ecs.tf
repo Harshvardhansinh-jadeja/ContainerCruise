@@ -16,19 +16,35 @@ resource "aws_ecs_task_definition" "harshvardhan-task-def" {
       image     = "${aws_ecr_repository.harshvardhan-repo.repository_url}"
     #    cpu = "0.5 vCPU"
     #    memory = 1024
-      essential = true
-      portMappings = [
+      essential = true,
+      environment: [
+        {
+          "name": "DATABASE_URL", 
+          "value": "postgresql://${var.username}:${var.password}@${aws_db_instance.harshvardhan-rds.endpoint}/auth"
+        }
+     ],
+      portMappings = [  
         {
           containerPort = var.container-port
           hostPort      = var.container-port
         }
-      ]
+      ],
+      logConfiguration: {
+                logDriver: "awslogs",
+                options: {
+                    awslogs-group: "/ecs/harshvardhan-task-def",
+                    awslogs-region: "us-west-2",
+                    awslogs-create-group: "true",
+                    awslogs-stream-prefix: "ecs"
+                }
+            }
     }
   ])
   
   requires_compatibilities = [ "FARGATE" ]
   cpu = "0.5 vCPU"
   memory = "1GB"
+  
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture = "X86_64"
@@ -53,7 +69,7 @@ resource "aws_ecs_service" "harshvardhan-service" {
   }
 
   network_configuration {
-    subnets = [aws_subnet.harshvardhan-private-subnet.id,aws_subnet.harshvardhan-private-subnet-2.id]
+    subnets = [aws_subnet.harshvardhan-private-subnets[0].id,aws_subnet.harshvardhan-private-subnets[1].id]
     security_groups = [aws_security_group.harshvardhan-ecs-sg.id]
   }
 
