@@ -2,7 +2,7 @@ resource "aws_lb" "harshvardhan-alb-service" {
   name               = "harshvardhan-alb-service"
   internal           = false
   load_balancer_type = "application"
-  subnets            = [aws_subnet.harshvardhan-public-subnet.id,aws_subnet.harshvardhan-public-subnet-2.id]
+  subnets            = [aws_subnet.harshvardhan-public-subnets[0].id ,aws_subnet.harshvardhan-public-subnets[1].id]
   security_groups    = [aws_security_group.harshvardhan-alb-sg.id] 
 }
 

@@ -3,6 +3,7 @@ resource "aws_db_instance" "harshvardhan-rds" {
     instance_class = "db.t3.micro"
     storage_type = "gp2"
     engine = "postgres"
+    skip_final_snapshot = true
     apply_immediately = true
     publicly_accessible = false
     username = var.username

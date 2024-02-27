@@ -1,14 +1,36 @@
-name: Terraform
-defaults:
-  run:
-    working-directory: ./Infrastructure
+name: Deploy Application
+
 on:
-  workflow_dispatch:
-#   push:
-#     branches: "main"
+  push:
+    branches: "dev"
 
 jobs:
-  Terraform:
+  # Build:
+  #   defaults:
+  #     run:
+  #       working-directory: ./code
+
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: dev
+
+  #     - name: Install NPM
+  #       run: sudo apt install npm
+
+  #     - name: Install Packages
+  #       run: npm install
+
+  #     - name: Build app
+  #       run: npm run build
+
+  Deploy:
+    # needs: Build
+    defaults:
+      run:
+        working-directory: ./Infrastructure
     runs-on: ubuntu-latest
     environment: dev
 
@@ -21,7 +43,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: dev
 
       - name: install Terraform
         run: |
