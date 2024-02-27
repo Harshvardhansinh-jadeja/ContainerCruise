@@ -8,7 +8,7 @@ jobs:
   Build:
     defaults:
       run:
-        working-directory: ./code
+        working-directory: ./auth
 
     runs-on: ubuntu-latest
     steps:
