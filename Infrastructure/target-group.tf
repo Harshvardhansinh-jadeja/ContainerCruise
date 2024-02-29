@@ -1,9 +1,10 @@
-resource "aws_lb_target_group" "harshvardhan-tg" {
+module "harshvardhan-tg" {
+  source = "./modules/target-group"
   name     = "harshvardhan-tg"
-  port     = var.container-port
+  container-port = var.container-port
   protocol = "HTTP"
-  target_type = "ip"
-  vpc_id   = aws_vpc.harshvardhan-vpc.id
+  tg_type = "ip" 
+  vpc_id   = module.harshvardhan-vpc.vpc_id
 }
 
 # resource "aws_lb_target_group_attachment" "harshvardhan-tg-attachment" {

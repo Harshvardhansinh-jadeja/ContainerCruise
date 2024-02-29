@@ -24,15 +24,15 @@ variable "account_id" {
 }
 variable "local-image" {
   type = string
-  # default = "containercruise"
-  default = "authcontainer"
+  default = "containercruise"
+  # default = "authcontainer"
 }
 
 # we used this because it was giving me error when we give container name which contains slash
 variable "container-name" {
   type = string
-  default = "authcontainer"
-  # default = "containercruise"
+  # default = "authcontainer"
+  default = "containercruise"
 }
 
 variable "username" {
@@ -50,7 +50,7 @@ variable "db_port" {
   default = 5432
 }
 locals {
-  repo_url= aws_ecr_repository.harshvardhan-repo.name
+  repo_url= module.harshvardhan-repo.repo_name
 }
 
 variable "private_subnets" {
