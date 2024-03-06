@@ -41,6 +41,8 @@ jobs:
       TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
       TF_VAR_username: ${{secrets.RDS_USERNAME}}
       TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+      AWS_PROFILE: "harsh"
+      AWS_REGION: "us-west-2"
 
     steps:
       - name: Checkout
