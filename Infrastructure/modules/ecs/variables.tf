@@ -25,15 +25,6 @@ variable "container-port" {
   type = number
 }
 
-variable "awslogs-group" {
-  type = string
-}
-variable "awslogs-stream-prefix" {
-  type = string
-}
-variable "awslogs-region" {
-  type = string
-}
 variable "role_arn" {
   type = string
 }
@@ -56,3 +47,10 @@ variable "security_groups" {
   type = list(string)
 }
 
+variable "aws_log" {
+  type = object({
+      logDriver :optional(string),
+      options :  optional(map(string))                
+  })
+  default = null
+}

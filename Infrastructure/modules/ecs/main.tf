@@ -27,15 +27,7 @@ resource "aws_ecs_task_definition" "gen-task-definition" {
           hostPort      = var.container-port
         }
       ],
-      logConfiguration: {
-                logDriver: "awslogs",
-                options: {
-                    awslogs-group: var.awslogs-group  ,
-                    awslogs-region: var.awslogs-region,
-                    awslogs-create-group: "true",
-                    awslogs-stream-prefix: var.awslogs-region
-                }
-            }
+      logConfiguration: var.aws_log
     }
   ])
   
@@ -48,6 +40,7 @@ resource "aws_ecs_task_definition" "gen-task-definition" {
     cpu_architecture = "X86_64"
   }
   execution_role_arn = var.role_arn
+  task_role_arn = var.role_arn
 }
 
 resource "aws_ecs_service" "gen-service" {
