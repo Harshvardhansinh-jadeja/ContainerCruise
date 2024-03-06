@@ -8,6 +8,10 @@ variable "region" {
   sensitive = true
 }
 
+variable "ecr_repo" {
+  type = string
+}
+
 variable "container-port" {
   type = number
   default = 3000
@@ -48,9 +52,6 @@ variable "password" {
 variable "db_port" {
   type = number
   default = 5432
-}
-locals {
-  repo_url= module.harshvardhan-repo.repo_name
 }
 
 variable "private_subnets" {
