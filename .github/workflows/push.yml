@@ -5,29 +5,29 @@ on:
     branches: "dev"
 
 jobs:
-  # Build:
-  #   defaults:
-  #     run:
-  #       working-directory: ./auth
+  Build:
+    defaults:
+      run:
+        working-directory: ./auth
 
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: dev
 
-  #     - name: Install NPM
-  #       run: sudo apt install npm
+      - name: Install NPM
+        run: sudo apt install npm
 
-  #     - name: Install Packages
-  #       run: npm install
+      - name: Install Packages
+        run: npm install
 
-  #     - name: Build app
-  #       run: npm run build
+      - name: Build app
+        run: npm run build
 
   Deploy:
-    # needs: Build
+    needs: Build
     defaults:
       run:
         working-directory: ./Infrastructure
@@ -35,15 +35,12 @@ jobs:
     environment: dev
 
     env:
-      ECR_REPO: "harshvardhan-repo"
       TF_VAR_ecr_repo: "harshvardhan-repo"
       TF_VAR_profile: "harsh"
       TF_VAR_region: "us-west-2"
       TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
       TF_VAR_username: ${{secrets.RDS_USERNAME}}
       TF_VAR_password: ${{secrets.RDS_PASSWORD}}
-      AWS_REGION: "us-west-2"
-      AWS_PROFILE: "harsh"
 
     steps:
       - name: Checkout
@@ -73,11 +70,11 @@ jobs:
           docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
           docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
 
-      # - name: initialize terraform
-      #   run: terraform init
+      - name: initialize terraform
+        run: terraform init
 
-      # - name: plan terraform
-      #   run: "terraform plan"
+      - name: plan terraform
+        run: "terraform plan"
 
-      # - name: Apply resources
-      #   run: terraform apply -auto-approve
+      - name: Apply resources
+        run: terraform apply -auto-approve
