@@ -41,6 +41,8 @@ jobs:
       TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
       TF_VAR_username: ${{secrets.RDS_USERNAME}}
       TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+      AWS_REGION: "us-west-2"
+      AWS_PROFILE: "harsh"
 
     steps:
       - name: Checkout
@@ -60,17 +62,15 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          AWS_REGION: "us-west-2"
-          AWS_PROFILE: "harsh"
 
       - name: Login to ECR
-        run: aws ecr get-login-password --region $TF_VAR_REGION --profile $TF_VAR_profile | docker login --username AWS --password-stdin ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_REGION.amazonaws.com
+        run: docker login -u AWS -p $(aws ecr get-login-password -region $AWS_REGION) ${{secrets.AWS_ACCOUNT_ID}}.dkr.$AWS_REGION.amazonaws.com
 
       - name: Push image to ECR
         run: |
           docker build -t containercruise ../auth
-          docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_REGION.amazonaws.com/$ECR_REPO:latest
-          docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_REGION.amazonaws.com/$ECR_REPO:latest
+          docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:latest
+          docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:latest
       # - name: initialize terraform
       #   run: terraform init
 
