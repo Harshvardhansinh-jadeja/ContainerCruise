@@ -30,12 +30,6 @@ jobs:
 
   Pull:
     needs: path
-<<<<<<< HEAD
-    if: ${{ needs.path.outputs.frontend == 'true' }}
-    defaults:
-      run:
-        working-directory: ./auth
-=======
     uses: ./.github/workflows/reusable.yml
     with:
       apply: false
@@ -47,7 +41,6 @@ jobs:
       RDS_USERNAME: ${{secrets.RDS_USERNAME}}
       RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
       AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
->>>>>>> 3f90b8a91653161a6bc55063346f4a63dabf211d
 
   # Build:
   #   needs: path
