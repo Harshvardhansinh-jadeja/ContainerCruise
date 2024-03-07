@@ -73,10 +73,10 @@ jobs:
 
       - name: credentials on cli
         run: |
-          aws configure --profile harsh set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}} \n
-          aws configure --profile harsh set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}} \n
-          aws configure --profile harsh set region us-west-2 \n
-          aws configure list \n
+          aws configure --profile harsh set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}} 
+          aws configure --profile harsh set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}} 
+          aws configure --profile harsh set region us-west-2 
+          aws configure list 
           aws sts get-caller-identity
 
       - name: install Terraform
