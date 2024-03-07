@@ -6,7 +6,7 @@ module "harshvardhan-cluster" {
   env_name = "DATABASE_URL"
   env_value = "postgresql://${var.username}:${var.password}@${module.harshvardhan-rds.endpoint}/auth"
   container-port= var.container-port
-  image = local.repo_url
+  image =  "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.ecr_repo}:latest"
   role_arn = data.aws_iam_role.task_exec-role.arn
   service_name = "harshvardhan-service"
   desired_count   = 1

@@ -5,7 +5,7 @@ variable "profile" {
 variable "region" {
   type = string
   # default = "us-west-2"
-  sensitive = true
+  # sensitive = true
 }
 
 variable "ecr_repo" {

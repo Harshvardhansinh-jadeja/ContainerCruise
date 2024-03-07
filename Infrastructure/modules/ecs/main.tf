@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "gen-task-definition" {
           hostPort      = var.container-port
         }
       ],
-      logConfiguration: var.aws_log
+        logConfiguration: var.aws_log
     }
   ])
   
