@@ -73,11 +73,11 @@ jobs:
           docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
           docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
 
-      # - name: initialize terraform
-      #   run: terraform init
+      - name: initialize terraform
+        run: terraform init
 
-      # - name: plan terraform
-      #   run: "terraform plan"
+      - name: plan terraform
+        run: "terraform plan"
 
-      # - name: Apply resources
-      #   run: terraform apply -auto-approve
+      - name: Apply resources
+        run: terraform apply -auto-approve
