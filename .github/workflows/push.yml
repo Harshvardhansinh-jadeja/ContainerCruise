@@ -1,8 +1,8 @@
 name: Deploy Application
 
 on:
-  push:
-    branches: "dev"
+  # push:
+  #   branches: "dev"
 
 jobs:
   Push:
@@ -17,6 +17,7 @@ jobs:
       RDS_USERNAME: ${{secrets.RDS_USERNAME}}
       RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
       AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+
   # Build:
   #   defaults:
   #     run:
