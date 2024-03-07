@@ -71,13 +71,13 @@ jobs:
         with:
           ref: dev
 
-      #   - name:
-      #       credentials on cli
-      #       # run: bash '../.github/'.github/workflows/commands.sh
-      #     run: |
-      #       aws configure --profile harsh set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}} \n
-      #       aws configure --profile harsh set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}} \n
-      #       aws configure --profile harsh set region us-west-2 \n
+      - name: credentials on cli
+        run: |
+          aws configure --profile harsh set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}} \n
+          aws configure --profile harsh set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}} \n
+          aws configure --profile harsh set region us-west-2 \n
+          aws configure list \n
+          aws sts get-caller-identity
 
       - name: install Terraform
         run: |
@@ -85,16 +85,16 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install terraform
 
-      - name: credentials on cli
-        run: bash ../.github/workflows/commands.sh
-        env:
-          AWS_REGION: "us-west-2"
-          AWS_PROFILE: "harsh"
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      #   - name: credentials on cli
+      #     run: bash ../.github/workflows/commands.sh
+      #     env:
+      #       AWS_REGION: "us-west-2"
+      #       AWS_PROFILE: "harsh"
+      #       AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+      #       AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
 
       - name: Login to ECR
-        run: docker login -u AWS -p $(aws ecr get-login-password --region us-west-2) ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-west-2.amazonaws.com
+        run: docker login -u AWS -p $(aws ecr get-login-password --profile harsh --region us-west-2) ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-west-2.amazonaws.com
 
       - name: Push image to ECR
         run: |
