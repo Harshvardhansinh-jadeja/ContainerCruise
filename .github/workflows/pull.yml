@@ -16,7 +16,7 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      infra: ${{ steps.filter.outputs.infra }}
+      infra: ${{ steps.filter.outputs.infra}}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
       - uses: dorny/paths-filter@v3

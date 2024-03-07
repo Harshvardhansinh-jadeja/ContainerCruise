@@ -1,6 +1,7 @@
 name: Deploy Application
 
 on:
+  workflow_dispatch:
   # push:
   #   branches: "dev"
 
@@ -8,9 +9,9 @@ jobs:
   Push:
     uses: ./.github/workflows/reusable.yml
     with:
-      apply: true
-      build: true
-      infra: true
+      apply: "true"
+      build: "true"
+      infra: "true"
     secrets:
       AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
       AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}

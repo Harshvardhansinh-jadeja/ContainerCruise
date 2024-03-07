@@ -5,13 +5,13 @@ on:
     inputs:
       apply:
         required: true
-        type: boolean
+        type: string
       build:
         required: true
-        type: boolean
+        type: string
       infra:
         required: true
-        type: boolean
+        type: string
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -26,7 +26,7 @@ on:
 
 jobs:
   Build:
-    if: ${{inputs.build == true }}
+    if: ${{inputs.build == 'true' }}
     defaults:
       run:
         working-directory: ./auth
@@ -48,7 +48,7 @@ jobs:
         run: npm run build
 
   Deploy:
-    if: ${{inputs.infra == true }}
+    if: ${{inputs.infra == 'true' }}
     # needs: Build
     defaults:
       run:
@@ -101,5 +101,5 @@ jobs:
         run: terraform plan
 
       - name: Apply terraform
-        if: ${{inputs.apply == true}}
+        if: ${{inputs.apply == 'true'}}
         run: terraform apply -auto-approve
