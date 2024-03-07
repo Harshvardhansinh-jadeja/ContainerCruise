@@ -71,18 +71,19 @@ jobs:
         with:
           ref: dev
 
+      - name:
+          credentials on cli
+          # run: bash '../.github/'.github/workflows/commands.sh
+        run: |
+          aws configure --profile harsh set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws configure --profile harsh set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws configure --profile harsh set region us-west-2
+
       - name: install Terraform
         run: |
           wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install terraform
-
-      - name: credentials on cli
-        # run: bash '../.github/'.github/workflows/commands.sh
-        run: |
-          aws configure --profile harsh set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws configure --profile harsh set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws configure --profile harsh set region us-west-2
 
       #   - name: credentials on cli
       #     # run: bash '../.github/'.github/workflows/commands.sh
