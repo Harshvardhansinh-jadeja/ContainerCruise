@@ -28,67 +28,88 @@ jobs:
             infra:
               - 'Infrastructure/**'
 
-  Build:
+  Pull:
     needs: path
+<<<<<<< HEAD
     if: ${{ needs.path.outputs.frontend == 'true' }}
     defaults:
       run:
         working-directory: ./auth
+=======
+    uses: ./.github/workflows/reusable.yml
+    with:
+      apply: false
+      build: ${{needs.path.outputs.frontend}}
+      infra: ${{needs.path.outputs.infra}}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      RDS_USERNAME: ${{secrets.RDS_USERNAME}}
+      RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
+      AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+>>>>>>> 3f90b8a91653161a6bc55063346f4a63dabf211d
 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: dev
+  # Build:
+  #   needs: path
+  #   if: ${{ needs.path.outputs.frontend == 'true' }}
+  #   defaults:
+  #     run:
+  #       working-directory: ./auth
 
-      - name: Install NPM
-        run: sudo apt install npm
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: dev
 
-      - name: Install Packages
-        run: npm install
+  #     - name: Install NPM
+  #       run: sudo apt install npm
 
-      - name: Build app
-        run: npm run build
+  #     - name: Install Packages
+  #       run: npm install
 
-  Infra:
-    needs: path
-    if: ${{ needs.path.outputs.infra == 'true' }}
-    defaults:
-      run:
-        working-directory: ./Infrastructure
-    env:
-      TF_VAR_profile: "harsh"
-      TF_VAR_region: "us-west-2"
-      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
-      TF_VAR_username: ${{secrets.RDS_USERNAME}}
-      TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+  #     - name: Build app
+  #       run: npm run build
 
-    environment: dev
+  # Infra:
+  #   needs: path
+  #   if: ${{ needs.path.outputs.infra == 'true' }}
+  #   defaults:
+  #     run:
+  #       working-directory: ./Infrastructure
+  #   env:
+  #     TF_VAR_profile: "harsh"
+  #     TF_VAR_region: "us-west-2"
+  #     TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+  #     TF_VAR_username: ${{secrets.RDS_USERNAME}}
+  #     TF_VAR_password: ${{secrets.RDS_PASSWORD}}
 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: dev
+  #   environment: dev
 
-      - name: install Terraform
-        run: |
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install terraform
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: dev
 
-      - name: credentials on cli
-        run: bash ../.github/workflows/commands.sh
-        env:
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          AWS_REGION: "us-west-2"
-          AWS_PROFILE: "harsh"
+  #     - name: install Terraform
+  #       run: |
+  #         wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  #         echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+  #         sudo apt update && sudo apt install terraform
 
-      - name: initialize terraform
-        run: terraform init
+  #     - name: credentials on cli
+  #       run: bash ../.github/workflows/commands.sh
+  #       env:
+  #         AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+  #         AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+  #         AWS_REGION: "us-west-2"
+  #         AWS_PROFILE: "harsh"
 
-      - name: plan terraform
-        run: "terraform plan"
+  #     - name: initialize terraform
+  #       run: terraform init
+
+  #     - name: plan terraform
+  #       run: "terraform plan"

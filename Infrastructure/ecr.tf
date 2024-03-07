@@ -1,30 +1,34 @@
-resource "aws_ecr_repository" "harshvardhan-repo" {
-  name = "harshvardhan-repo" 
-}
+# module "harshvardhan-repo" {
+#   source = "./modules/ecr"
+#   name = "harshvardhan-repo"
+#   force_delete = true
+# }
 
 
-# resource "null_resource" "push_image" {
-#   depends_on = [ aws_ecr_repository.harshvardhan-repo ]
+# resource "null_resource" "run_comand_one" {
+#   depends_on = [ module.harshvardhan-repo]
 #   provisioner "local-exec" {
-#     command = <<-EOF
+#     command = "bash ./ecr.sh  ${var.region} ${var.profile} ${var.account_id} ${var.local-image} ${module.harshvardhan-repo.repository_url}"
+#   }
+# }
+
+# resource "null_resource" "run_comand_one" {
+#   depends_on = [ module.harshvardhan-repo ]
+#   provisioner "local-exec" {
+#     command = <<-EOT
 #        aws ecr get-login-password --region ${var.region} --profile ${var.profile} | docker login --username AWS --password-stdin ${var.account_id}.dkr.ecr.${var.region}.amazonaws.com
-#   EOF
+#   EOT
 #   }
 
 # }
-resource "null_resource" "run_comand_one" {
-  depends_on = [ aws_ecr_repository.harshvardhan-repo ]
-  provisioner "local-exec" {
-    command = "bash ./ecr.sh  ${var.region} ${var.profile} ${var.account_id} ${var.local-image} ${aws_ecr_repository.harshvardhan-repo.repository_url}"
-  }
-}
+
 
 # resource "null_resource" "run_comand_two" {
 #   depends_on = [null_resource.run_comand_one]
   
 #   provisioner "local-exec" {
 #     command = <<-EOT
-#       docker build -t ${var.local-image} ../code
+#       docker build -t ${var.local-image} ../auth
 #   EOT
 #   }
 # }
@@ -33,7 +37,7 @@ resource "null_resource" "run_comand_one" {
   
 #   provisioner "local-exec" {
 #     command = <<-EOT
-#        docker tag ${var.local-image}:latest ${aws_ecr_repository.harshvardhan-repo.repository_url}
+#        docker tag ${var.local-image}:latest ${module.harshvardhan-repo.repository_url}
 #   EOT
 #   }
 # }
@@ -42,7 +46,7 @@ resource "null_resource" "run_comand_one" {
 
 #   provisioner "local-exec" {
 #     command = <<-EOT
-#       docker push ${aws_ecr_repository.harshvardhan-repo.repository_url}
+#       docker push ${module.harshvardhan-repo.repository_url}
 #        EOT
 #   }
 # }

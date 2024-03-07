@@ -38,4 +38,8 @@ RUN apk add --no-cache bash
 
 # CMD ["npm","start"]
 COPY entrypoint.sh .
-CMD ["bash" , "./entrypoint.sh"]
+# windows to UNIX conversation adding \r at the end.
+
+RUN sed -i 's/\r$//' entrypoint.sh
+
+ENTRYPOINT ["bash" , "./entrypoint.sh"]

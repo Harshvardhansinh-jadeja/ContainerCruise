@@ -1,14 +1,28 @@
 name: Deploy Application
 
 on:
-  push:
-    branches: "dev"
+  workflow_dispatch:
+  # push:
+  #   branches: "dev"
 
 jobs:
+  Push:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      apply: true
+      build: true
+      infra: true
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      RDS_USERNAME: ${{secrets.RDS_USERNAME}}
+      RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
+      AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+
   # Build:
   #   defaults:
   #     run:
-  #       working-directory: ./code
+  #       working-directory: ./auth
 
   #   runs-on: ubuntu-latest
   #   steps:
@@ -18,7 +32,7 @@ jobs:
   #         ref: dev
 
   #     - name: Install NPM
-  #       run: sudo apt install npm
+  #       run: sudo apt update && sudo apt install npm
 
   #     - name: Install Packages
   #       run: npm install
@@ -26,47 +40,58 @@ jobs:
   #     - name: Build app
   #       run: npm run build
 
-  Deploy:
-    # needs: Build
-    defaults:
-      run:
-        working-directory: ./Infrastructure
-    runs-on: ubuntu-latest
-    environment: dev
+  # Deploy:
+  #   needs: Build
+  #   defaults:
+  #     run:
+  #       working-directory: ./Infrastructure
+  #   runs-on: ubuntu-latest
+  #   environment: dev
 
-    env:
-      TF_VAR_profile: "harsh"
-      TF_VAR_region: "us-west-2"
-      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
-      TF_VAR_username: ${{secrets.RDS_USERNAME}}
-      TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+  #   env:
+  #     ECR_REPO: "harshvardhan-repo"
+  #     TF_VAR_ecr_repo: "harshvardhan-repo"
+  #     TF_VAR_profile: "harsh"
+  #     TF_VAR_region: "us-west-2"
+  #     TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+  #     TF_VAR_username: ${{secrets.RDS_USERNAME}}
+  #     TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+  #     AWS_REGION: "us-west-2"
+  #     AWS_PROFILE: "harsh"
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: dev
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: dev
 
-      - name: install Terraform
-        run: |
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install terraform
+  #     - name: install Terraform
+  #       run: |
+  #         wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  #         echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+  #         sudo apt update && sudo apt install terraform
 
-      - name: credentials on cli
-        # run: bash '../.github/'.github/workflows/commands.sh
-        run: bash ../.github/workflows/commands.sh
-        env:
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          AWS_REGION: "us-west-2"
-          AWS_PROFILE: "harsh"
+  #     - name: credentials on cli
+  #       # run: bash '../.github/'.github/workflows/commands.sh
+  #       run: bash ../.github/workflows/commands.sh
+  #       env:
+  #         AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+  #         AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
 
-      - name: initialize terraform
-        run: terraform init
+  #     - name: Login to ECR
+  #       run: docker login -u AWS -p $(aws ecr get-login-password --region $TF_VAR_region) ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com
 
-      - name: plan terraform
-        run: "terraform plan"
+  #     - name: Push image to ECR
+  #       run: |
+  #         docker build -t containercruise ../auth
+  #         docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
+  #         docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
 
-      - name: Apply resources
-        run: terraform apply -auto-approve
+  #     - name: initialize terraform
+  #       run: terraform init
+
+  #     - name: plan terraform
+  #       run: "terraform plan"
+
+  #     - name: Apply resources
+  #       run: terraform apply -auto-approve

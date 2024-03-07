@@ -8,6 +8,10 @@ variable "region" {
   sensitive = true
 }
 
+variable "ecr_repo" {
+  type = string
+}
+
 variable "container-port" {
   type = number
   default = 3000
@@ -24,15 +28,15 @@ variable "account_id" {
 }
 variable "local-image" {
   type = string
-  # default = "containercruise"
-  default = "authcontainer"
+  default = "containercruise"
+  # default = "authcontainer"
 }
 
 # we used this because it was giving me error when we give container name which contains slash
 variable "container-name" {
   type = string
-  default = "authcontainer"
-  # default = "containercruise"
+  # default = "authcontainer"
+  default = "containercruise"
 }
 
 variable "username" {
@@ -48,9 +52,6 @@ variable "password" {
 variable "db_port" {
   type = number
   default = 5432
-}
-locals {
-  repo_url= aws_ecr_repository.harshvardhan-repo.name
 }
 
 variable "private_subnets" {

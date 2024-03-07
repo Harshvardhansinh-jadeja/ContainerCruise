@@ -1,7 +1,6 @@
-resource "aws_eip" "harshvardhan-eip" {
-  domain   = "vpc"
-  depends_on = [ aws_internet_gateway.harshvardhan-igw ]
-  tags = {
-    Name = "harshvardhan-EIP"
-  }
+module "harshvardhan-eip" {
+  source = "./modules/eip"
+
+  name = "harshvardhan-eip"
+  depends = module.harshvardhan-igw
 }
