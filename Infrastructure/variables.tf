@@ -41,7 +41,7 @@ variable "container-name" {
 
 variable "username" {
   type = string
-  sensitive = true
+  # sensitive = true
 }
 
 variable "password" {
