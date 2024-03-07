@@ -71,13 +71,6 @@ jobs:
         with:
           ref: dev
 
-      #   - name: credentials on cli
-      #     run: |
-      #       aws configure --profile harsh set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}}
-      #       aws configure --profile harsh set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}}
-      #       aws configure --profile harsh set region us-west-2
-      #       aws configure list
-
       - name: credentials on cli
         run: bash ../.github/workflows/commands.sh
         env:
