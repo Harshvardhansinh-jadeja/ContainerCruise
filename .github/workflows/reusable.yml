@@ -79,12 +79,19 @@ jobs:
 
       - name: credentials on cli
         # run: bash '../.github/'.github/workflows/commands.sh
-        run: bash ../.github/workflows/commands.sh
-        env:
-          AWS_REGION: "us-west-2"
-          AWS_PROFILE: "harsh"
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+        run: |
+          aws configure --profile $TF_VAR_profile set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws configure --profile $TF_VAR_profile set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws configure --profile  $TF_VAR_profile set region $TF_VAR_region
+
+      #   - name: credentials on cli
+      #     # run: bash '../.github/'.github/workflows/commands.sh
+      #     run: bash ../.github/workflows/commands.sh
+      #     env:
+      #       AWS_REGION: "us-west-2"
+      #       AWS_PROFILE: "harsh"
+      #       AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+      #       AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
 
       - name: Login to ECR
         run: docker login -u AWS -p $(aws ecr get-login-password --region $TF_VAR_region) ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com
