@@ -22,7 +22,6 @@
 
 # }
 
-
 # resource "null_resource" "run_comand_two" {
 #   depends_on = [null_resource.run_comand_one]
   
