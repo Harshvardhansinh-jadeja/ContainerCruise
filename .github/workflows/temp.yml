@@ -9,6 +9,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
     defaults:
       run:
         working-directory: ./Infrastructure
@@ -40,9 +41,12 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: us-west-2
+          role-to-assume: arn:aws:iam::831794387446:role/OIDC_Connect
           role-session-name: harsh
-          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
+          aws-region: us-west-2
+
+      - name: Get Identity
+        run: aws sts get-caller-identity
 
       - name: Login to Amazon ECR
         id: login-ecr
