@@ -6,7 +6,7 @@ resource "aws_route_table" "harshvardhan-public-rt" {
     gateway_id = module.harshvardhan-igw.igw_id
   }
   tags = {
-    Name = "harshvardhan-public-rt"
+    Name = "${var.environment}-public-rt"
   }
   
 }
@@ -19,7 +19,7 @@ resource "aws_route_table" "harshvardhan-private-rt" {
     nat_gateway_id = module.harshvardhan-ngw.nat_id
   }
   tags = {
-    Name = "harshvardhan-private-rt"
+    Name = "${var.environment}-private-rt"
   }
 }
 

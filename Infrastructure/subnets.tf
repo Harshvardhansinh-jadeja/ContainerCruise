@@ -4,7 +4,7 @@ resource "aws_subnet" "harshvardhan-private-subnets" {
   cidr_block = var.private_subnets[count.index]
   availability_zone = var.az[count.index]
    tags = {
-    Name = "harshvardhan-private-subnet-${count.index}",
+    Name = "${var.environment}-private-subnet-${count.index}",
   }
 }
 
@@ -14,7 +14,7 @@ resource "aws_subnet" "harshvardhan-public-subnets" {
   cidr_block = var.public_subnets[count.index]
   availability_zone = var.az[count.index]
    tags = {
-    Name = "harshvardhan-public-subnet-${count.index}",
+    Name = "${var.environment}-public-subnet-${count.index}",
   }
   map_public_ip_on_launch = true
 }

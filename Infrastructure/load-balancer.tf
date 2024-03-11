@@ -20,7 +20,7 @@
 
 module "harshvardhan-alb" {
   source = "./modules/load-balancer"
-  name = "harshvardhan-alb-service"
+  name = "${var.environment}-alb-service"
   internal= false
   lb_type = "application"
   subnets = [aws_subnet.harshvardhan-public-subnets[0].id ,aws_subnet.harshvardhan-public-subnets[1].id]

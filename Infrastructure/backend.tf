@@ -2,11 +2,11 @@
 terraform {
   backend "s3" {
    # for personal
-    # bucket = "harshvardhan"
+    bucket = "harshvardhan-tfstate"
     # bucket = "harshvardhan-tfstates"
     key = "logs/terraform.tfstate"
     region =  "us-west-2"
     # profile = "harsh"
-    profile = "harshvardhan"
+    # profile = "harshvardhan"
   }
 } 

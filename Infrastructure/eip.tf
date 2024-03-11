@@ -1,6 +1,5 @@
 module "harshvardhan-eip" {
   source = "./modules/eip"
-
-  name = "harshvardhan-eip"
+  name = "${var.environment}-eip"
   depends = module.harshvardhan-igw
 }

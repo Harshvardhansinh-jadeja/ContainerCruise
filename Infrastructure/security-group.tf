@@ -1,6 +1,6 @@
 module "harshvardhan-alb-sg" {
   source = "./modules/security-group"
-  name = "harshvardhan-alb-sg"
+  name = "${var.environment}-alb-sg"
   desc = "Application Load balancer"
   vpc = module.harshvardhan-vpc.vpc_id
    ingress_rules = [{
@@ -27,7 +27,7 @@ module "harshvardhan-alb-sg" {
 
 module "harshvardhan-ecs-sg" {
   source = "./modules/security-group"
-  name = "harshvardhan-ecs-sg"
+  name = "${var.environment}-ecs-sg"
   desc = "Elastic Container service group"
   vpc = module.harshvardhan-vpc.vpc_id
    ingress_rules = [{
@@ -54,7 +54,7 @@ module "harshvardhan-ecs-sg" {
 
 module "harshvardhan-RDS-sg" {
   source = "./modules/security-group"
-  name = "harshvardhan-RDS-sg"
+  name = "${var.environment}-RDS-sg"
   desc = "Relational Database System"
   vpc = module.harshvardhan-vpc.vpc_id
    ingress_rules = [{
@@ -80,7 +80,7 @@ module "harshvardhan-RDS-sg" {
 
 module "harshvardhan-bastion-sg" {
   source = "./modules/security-group"
-  name = "harshvardhan-bastion-sg"
+  name = "${var.environment}-bastion-sg"
   desc = "Bastion Host for SSH access"
   vpc = module.harshvardhan-vpc.vpc_id
    ingress_rules = [{

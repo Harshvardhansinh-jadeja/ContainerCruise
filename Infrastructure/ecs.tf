@@ -1,6 +1,6 @@
 module "harshvardhan-cluster" {
   source = "./modules/ecs"
-  name = "harshvardhan-cluster"
+  name = "${var.environment}-cluster"
   family = "harshvardhan-task-def"
   container-name = var.container-name
   environment= [{

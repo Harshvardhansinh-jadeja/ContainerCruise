@@ -1,6 +1,6 @@
 module "harshvardhan-rds" {
   source = "./modules/rds"
-  name = "harshvardhan-rds"
+  name = "${var.environment}-rds"
    instance_class = "db.t3.micro"
    storage_type = "gp2"
     engine = "postgres"

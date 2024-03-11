@@ -1,6 +1,6 @@
 module "harshvardhan-tg" {
   source = "./modules/target-group"
-  name     = "harshvardhan-tg"
+  name     = "${var.environment}-tg"
   container-port = var.container-port
   protocol = "HTTP"
   tg_type = "ip" 
