@@ -2,34 +2,63 @@ name: Deploy Application
 
 on:
   push:
-    branches: "dev"
+    branches:
+      - dev
+      - prod
+      - qa
+env:
+  my_env:
 
 jobs:
-  Deploy:
-    permissions:
-      id-token: write
-      contents: read
-
-    defaults:
-      run:
-        working-directory: ./Infrastructure
+  Set:
     runs-on: ubuntu-latest
-    environment: dev
-
-    env:
-      ECR_REPO: "harshvardhan-repo"
-      TF_VAR_ecr_repo: "harshvardhan-repo"
-      TF_VAR_profile: "harsh"
-      TF_VAR_region: "us-west-2"
-      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
-      TF_VAR_username: ${{secrets.RDS_USERNAME}}
-      TF_VAR_password: ${{secrets.RDS_PASSWORD}}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: dev
+      - name: Set up Variables
+        run: |
+          if [ ${{ github.ref }} == 'refs/heads/dev' ]; then
+            $my_env = "dev"
+            echo "Set up dev"
+          elif [ ${{ github.ref }} == 'refs/heads/qa' ]; then
+            $my_env = "qa"
+            echo "Set up qa"
+          elif [ ${{ github.ref }} == 'refs/heads/prod' ]; then
+            $my_env = "prod"
+            echo "Set up prod"
+          fi
+      - name: Print env
+        run: echo $my_env
+
+  Deploy:
+    # permissions:
+    #   id-token: write
+    #   contents: read
+
+    # defaults:
+    #   run:
+    #     working-directory: ./Infrastructure
+    runs-on: ubuntu-latest
+    # environment: dev
+
+    # env:
+    #   ECR_REPO: "harshvardhan-repo"
+    #   TF_VAR_ecr_repo: "harshvardhan-repo"
+    #   TF_VAR_profile: "harsh"
+    #   TF_VAR_region: "us-west-2"
+    #   TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+    #   TF_VAR_username: ${{secrets.RDS_USERNAME}}
+    #   TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+
+    steps:
+      - name: Print env
+        run: echo ${{env.my_env}}
+
+      - name: Print env Second time
+        run: echo $my_env
+      # - name: Checkout
+      #   uses: actions/checkout@v4
+      #   with:
+      #     ref: dev
 
       # - name: Configure AWS Credentials
       #   uses: aws-actions/configure-aws-credentials@v4
@@ -38,40 +67,40 @@ jobs:
       #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
       #     aws-region: us-west-2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
-          role-session-name: harsh
-          aws-region: us-west-2
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
+      #     role-session-name: harsh
+      #     aws-region: us-west-2
 
-      - name: Get Identity
-        run: aws sts get-caller-identity
+      # - name: Get Identity
+      #   run: aws sts get-caller-identity
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: harshvardhan-repo
-          IMAGE_TAG: ${{github.sha}}
-        run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      # - name: Build, tag, and push docker image to Amazon ECR
+      #   env:
+      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     REPOSITORY: harshvardhan-repo
+      #     IMAGE_TAG: ${{github.sha}}
+      #   run: |
+      #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
+      #     docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: install Terraform
-        run: |
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install terraform
+      # - name: install Terraform
+      #   run: |
+      #     wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+      #     echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+      #     sudo apt update && sudo apt install terraform
 
-      - name: initialize terraform
-        run: terraform init
+      # - name: initialize terraform
+      #   run: terraform init
 
-      - name: Destroy resources
-        run: terraform destroy -auto-approve
+      # - name: Destroy resources
+      #   run: terraform destroy -auto-approve
       # - name: plan terraform
       #   run: terraform plan
 

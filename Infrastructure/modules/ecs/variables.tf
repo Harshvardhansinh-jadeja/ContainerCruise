@@ -13,13 +13,6 @@ variable "container-name" {
 variable "image" {
   type = string
 }
-variable "env_name" {
-  type = string
-}
-
-variable "env_value" {
-  type = string
-}
 
 variable "container-port" {
   type = number
@@ -58,4 +51,12 @@ variable "aws_log" {
       })            
   })
   default = null
+}
+
+variable "environment" {
+  type = list(object({
+     name : string
+     value: any
+  }))
+  default = []
 }

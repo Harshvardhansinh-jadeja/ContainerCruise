@@ -15,12 +15,7 @@ resource "aws_ecs_task_definition" "gen-task-definition" {
       name      =  var.container-name,
       image     = var.image
       essential = true,
-      environment: [
-        {
-          "name": var.env_name, 
-          "value": var.env_value,
-        }
-     ],
+      environment: var.environment
       portMappings = [  
         {
           containerPort = var.container-port
