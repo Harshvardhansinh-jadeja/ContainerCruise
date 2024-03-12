@@ -3,9 +3,9 @@ name: Build and Plan
 on:
   workflow_call:
     inputs:
-      # environment:
-      #   required: true
-      #   type: string
+      environment:
+        required: true
+        type: string
       apply:
         required: true
         type: string
@@ -55,10 +55,10 @@ jobs:
       run:
         working-directory: ./Infrastructure
     runs-on: ubuntu-latest
-    # environment: ${{inputs.environment}}
+    environment: ${{inputs.environment}}
 
     env:
-      # TF_VAR_environment: ${{inputs.environment}}
+      TF_VAR_environment: ${{inputs.environment}}
       ECR_REPO: "harshvardhan-repo"
       TF_VAR_ecr_repo: "harshvardhan-repo"
       TF_VAR_profile: "harsh"
