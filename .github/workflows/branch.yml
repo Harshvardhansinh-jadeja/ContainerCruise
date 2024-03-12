@@ -18,14 +18,56 @@ jobs:
           if [ ${{github.ref_name}} == 'dev' ]
           then 
               echo "branch=dev" >> $GITHUB_ENV
-          else
+          elif [ ${{github.ref_name}} == 'sandbox' ]
+          then 
               echo "branch=sandbox" >> $GITHUB_ENV
+          else
+              echo "branch=prod" >> $GITHUB_ENV
           fi
 
       - name: Print Branch
         run: echo ${{env.branch}}
 
+  Build:
+    needs: SetEnvironment
+    environment: ${{needs.SetEnvironment.outputs.environment}}
+
+    env:
+      TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
+
+    defaults:
+      run:
+        working-directory: ./auth
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install NPM
+        run: sudo apt update && sudo apt install npm
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Build app
+        run: npm run build
+
   Deploy:
+    needs: SetEnvironment
+    environment: ${{needs.SetEnvironment.outputs.environment}}
+
+    env:
+      TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
+      TF_VAR_tag: ${{github.sha}}
+      ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
+      TF_VAR_ecr_repo: "${{needs.SetEnvironment.outputs.environment}}-repo"
+      TF_VAR_profile: "harsh"
+      TF_VAR_region: "us-west-2"
+      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+      TF_VAR_username: ${{secrets.RDS_USERNAME}}
+      TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+
     defaults:
       run:
         working-directory: ./Infrastructure
@@ -33,11 +75,7 @@ jobs:
       id-token: write
       contents: read
     runs-on: ubuntu-latest
-    needs: SetEnvironment
-    env:
-      TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
 
-    environment: ${{needs.SetEnvironment.outputs.environment}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,11 +84,19 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
-          # role-session-name: harsh
           aws-region: us-west-2
 
       - name: Get Identity
         run: aws sts get-caller-identity
+
+      - name: Check if there's an ECR already
+        id: ECR
+        continue-on-error: true
+        run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
+
+      - name: Create ECR
+        if: ${{steps.ECR.outcome != 'success'}}
+        run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -59,8 +105,20 @@ jobs:
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: harshvardhan-repo
+          REPOSITORY: "${{needs.SetEnvironment.outputs.environment}}-repo"
           IMAGE_TAG: ${{github.sha}}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: initialize terraform
+        run: terraform init
+
+      - name: plan terraform
+        run: terraform plan
+
+      # - name: Apply terraform
+      # run: terraform apply -auto-approve
