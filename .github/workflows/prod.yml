@@ -2,8 +2,8 @@ name: Prod Deploy
 
 on:
   workflow_dispatch:
-  push:
-    branches: "sandbox"
+  # push:
+  # branches: "sandbox"
 
 jobs:
   Push:
