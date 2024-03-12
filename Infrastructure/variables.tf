@@ -1,6 +1,6 @@
 variable "profile" {
   type = string
-  # default = "harsh" 
+  default = "harsh" 
 }
 variable "region" {
   type = string
