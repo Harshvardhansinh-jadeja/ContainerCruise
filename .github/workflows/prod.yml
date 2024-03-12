@@ -14,10 +14,12 @@ jobs:
     with:
       apply: "true"
       environment: "sandbox"
-      build: "true"
+      build: "false"
       infra: "true"
 
     secrets:
+      AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
       RDS_USERNAME: ${{secrets.RDS_USERNAME}}
       RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
       AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
