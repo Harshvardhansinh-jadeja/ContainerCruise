@@ -71,3 +71,7 @@ variable "environment" {
   type = string
 
 }
+
+variable "tag" {
+  type = string
+}

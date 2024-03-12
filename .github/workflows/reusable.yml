@@ -62,6 +62,7 @@ jobs:
 
     env:
       ECR_REPO: "harshvardhan-repo"
+      TF_VAR_tag: ${{github.sha}}
       TF_VAR_ecr_repo: "harshvardhan-repo"
       TF_VAR_profile: "harsh"
       TF_VAR_region: "us-west-2"
