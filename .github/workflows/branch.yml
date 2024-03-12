@@ -26,6 +26,9 @@ jobs:
         run: echo ${{env.branch}}
 
   Deploy:
+    defaults:
+      run:
+        working-directory: ./Infrastructure
     permissions:
       id-token: write
       contents: read
