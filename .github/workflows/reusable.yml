@@ -23,7 +23,9 @@ on:
         required: true
       AWS_ACCOUNT_ID:
         required: true
-
+permissions:
+  id-token: write
+  contents: read
 jobs:
   Build:
     if: ${{inputs.build == 'true' }}
