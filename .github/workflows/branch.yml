@@ -10,7 +10,7 @@ jobs:
   SetEnvironment:
     runs-on: ubuntu-latest
     outputs:
-      environment: ${{ steps.set_environment.outputs.branch }}
+      environment: ${{env.branch}}
     steps:
       - name: Set Environment
         id: set_environment
