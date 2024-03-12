@@ -3,9 +3,9 @@ name: Build and Plan
 on:
   workflow_call:
     inputs:
-      environment:
-        required: true
-        type: string
+      # environment:
+      #   required: true
+      #   type: string
       apply:
         required: true
         type: string
@@ -58,7 +58,7 @@ jobs:
     # environment: ${{inputs.environment}}
 
     env:
-      TF_VAR_environment: ${{inputs.environment}}
+      # TF_VAR_environment: ${{inputs.environment}}
       ECR_REPO: "harshvardhan-repo"
       TF_VAR_ecr_repo: "harshvardhan-repo"
       TF_VAR_profile: "harsh"
@@ -71,18 +71,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
-          aws-region: us-west-2
-
-      - name: Get Identity
-        run: aws sts get-caller-identity
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: credentials on cli
+        run: bash ../.github/workflows/commands.sh
+        env:
+          AWS_REGION: "us-west-2"
+          AWS_PROFILE: "harsh"
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
 
       - name: install Terraform
         run: |
@@ -90,11 +85,11 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install terraform
 
-      - name: Push image to ECR
-        run: |
-          docker build -t containercruise ../auth
-          docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
-          docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:${{github.sha}}
+      # - name: Push image to ECR
+      #   run: |
+      #     docker build -t containercruise ../auth
+      #     docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
+      #     docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:${{github.sha}}
 
     #   - name: initialize terraform
     #     run: terraform init
