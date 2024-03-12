@@ -1,10 +1,11 @@
 name: Deploy Application
 
 on:
-  push:
-    branches:
-      - dev
-      - main
+  workflow_dispatch:
+#   push:
+#     branches:
+#       - dev
+#       - main
 
 jobs:
   SetEnvironment:
@@ -24,7 +25,7 @@ jobs:
         run: |
           if [ ${{github.ref_name}} == 'dev' ]
           then 
-              echo "cond_env=dev" >> $GITHUB_ENV
+              echo "cond_env=master" >> $GITHUB_ENV
           else
               echo "cond_env=prod" >> $GITHUB_ENV
           fi
@@ -38,6 +39,7 @@ jobs:
     env:
       TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
       cond_env: ${{needs.SetEnvironment.outputs.condition}}
+    environment: ${{needs.SetEnvironment.outputs.environment}}
     steps:
       - name: Print env
         run: echo ${{env.TF_VAR_environment}} ${{env.cond_env}}

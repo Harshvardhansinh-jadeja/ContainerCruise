@@ -1,0 +1,21 @@
+name: Sandbox Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - sandbox
+
+jobs:
+  Push:
+    uses: ./.github/workflows/reusable_branch.yml
+    with:
+      apply: "true"
+      environment: "sandbox"
+      build: "true"
+      infra: "true"
+
+    secrets:
+      RDS_USERNAME: ${{secrets.RDS_USERNAME}}
+      RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
+      AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}

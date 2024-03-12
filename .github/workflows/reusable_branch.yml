@@ -1,0 +1,107 @@
+name: Build and Plan
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      apply:
+        required: true
+        type: string
+      build:
+        required: true
+        type: string
+      infra:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: false
+      AWS_SECRET_ACCESS_KEY:
+        required: false
+      RDS_USERNAME:
+        required: true
+      RDS_PASSWORD:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+
+jobs:
+  Build:
+    if: ${{inputs.build == 'true' }}
+    defaults:
+      run:
+        working-directory: ./auth
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install NPM
+        run: sudo apt update && sudo apt install npm
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Build app
+        run: npm run build
+
+  Deploy:
+    if: ${{inputs.infra == 'true' }}
+    # needs: Build
+    defaults:
+      run:
+        working-directory: ./Infrastructure
+    runs-on: ubuntu-latest
+    environment: ${{inputs.environment}}
+
+    env:
+      TF_VAR_environment: ${{inputs.environment}}
+      ECR_REPO: "harshvardhan-repo"
+      TF_VAR_ecr_repo: "harshvardhan-repo"
+      TF_VAR_profile: "harsh"
+      TF_VAR_region: "us-west-2"
+      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+      TF_VAR_username: ${{secrets.RDS_USERNAME}}
+      TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
+          aws-region: us-west-2
+
+      - name: Get Identity
+        run: aws sts get-caller-identity
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: install Terraform
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install terraform
+
+      - name: Push image to ECR
+        run: |
+          docker build -t containercruise ../auth
+          docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
+          docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:${{github.sha}}
+
+    #   - name: initialize terraform
+    #     run: terraform init
+
+    #   - name: plan terraform
+    #     run: terraform plan
+
+    #   - name: Apply terraform
+    #     if: ${{inputs.apply == 'true'}}
+    #     run: terraform apply -auto-approve
