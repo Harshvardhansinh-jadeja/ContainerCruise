@@ -49,6 +49,9 @@ jobs:
         run: npm run build
 
   Deploy:
+    permissions:
+      id-token: write
+      contents: read
     if: ${{inputs.infra == 'true' }}
     # needs: Build
     defaults:
@@ -71,13 +74,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: credentials on cli
-        run: bash ../.github/workflows/commands.sh
-        env:
-          AWS_REGION: "us-west-2"
-          AWS_PROFILE: "harsh"
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      # - name: credentials on cli
+      #   run: bash ../.github/workflows/commands.sh
+      #   env:
+      #     AWS_REGION: "us-west-2"
+      #     AWS_PROFILE: "harsh"
+      #     AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+      #     AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
+          aws-region: us-west-2
+
+      - name: Get Identity
+        run: aws sts get-caller-identity
 
       - name: install Terraform
         run: |
