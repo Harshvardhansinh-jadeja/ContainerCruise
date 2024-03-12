@@ -5,23 +5,19 @@ on:
     branches:
       - dev
       - main
-env:
-  TF_VAR_environment: ""
 
 jobs:
   SetEnvironment:
     runs-on: ubuntu-latest
     outputs:
-      environment: ${{ steps.set_environment.outputs.environment }}
+      environment: ${{ steps.set_environment.outputs.branch }}
     steps:
       - name: Set Environment
         id: set_environment
-        run: |
-          if [[ ${{ github.ref_name }} == "dev" ]]; then
-            echo "TF_VAR_environment=prod" >> $GITHUB_ENV
-          else
-            echo "TF_VAR_environment=prod" >> $GITHUB_ENV
-          fi
+        run: echo "branch=dev" >> $GITHUB_ENV
+
+      - name: Print
+        run: echo ${{env.branch}}
   Deploy:
     runs-on: ubuntu-latest
     needs: SetEnvironment
