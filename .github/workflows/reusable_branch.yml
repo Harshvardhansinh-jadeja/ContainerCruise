@@ -52,6 +52,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
     if: ${{inputs.infra == 'true' }}
     # needs: Build
     defaults:

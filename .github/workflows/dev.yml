@@ -7,6 +7,9 @@ on:
 
 jobs:
   Push:
+    permissions:
+      id-token: write
+      contents: read
     uses: ./.github/workflows/reusable_branch.yml
     with:
       apply: "true"
