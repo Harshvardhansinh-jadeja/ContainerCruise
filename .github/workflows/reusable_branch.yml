@@ -75,14 +75,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: credentials on cli
-      #   run: bash ../.github/workflows/commands.sh
-      #   env:
-      #     AWS_REGION: "us-west-2"
-      #     AWS_PROFILE: "harsh"
-      #     AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-      #     AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -98,11 +90,11 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update && sudo apt install terraform
 
-      # - name: Push image to ECR
-      #   run: |
-      #     docker build -t containercruise ../auth
-      #     docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
-      #     docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:${{github.sha}}
+      - name: Push image to ECR
+        run: |
+          docker build -t containercruise ../auth
+          docker tag containercruise:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:latest
+          docker push  ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.$TF_VAR_region.amazonaws.com/$TF_VAR_ecr_repo:${{github.sha}}
 
     #   - name: initialize terraform
     #     run: terraform init
