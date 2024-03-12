@@ -11,18 +11,33 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{env.branch}}
+      condition: ${{env.cond_env}}
     steps:
       - name: Set Environment
         id: set_environment
         run: echo "branch=dev" >> $GITHUB_ENV
 
+      - name: Print branch
+        run: echo ${{github.ref_name}}
+
+      - name: Use condition
+        run: |
+          if [ ${{github.ref_name}} == 'dev' ]
+          then 
+              echo "cond_env=dev" >> $GITHUB_ENV
+          else
+              echo "cond_env=prod" >> $GITHUB_ENV
+          fi
+
       - name: Print
-        run: echo ${{env.branch}}
+        run: echo ${{env.branch}} ${{env.cond_env}}
+
   Deploy:
     runs-on: ubuntu-latest
     needs: SetEnvironment
     env:
       TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
+      cond_env: ${{needs.SetEnvironment.outputs.condition}}
     steps:
       - name: Print env
-        run: echo ${{env.TF_VAR_environment}}
+        run: echo ${{env.TF_VAR_environment}} ${{env.cond_env}}
