@@ -1,0 +1,32 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+env:
+  TF_VAR_environment: ""
+
+jobs:
+  SetEnvironment:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set_environment.outputs.environment }}
+    steps:
+      - name: Set Environment
+        id: set_environment
+        run: |
+          if [[ ${{ github.ref_name }} == "dev" ]]; then
+            echo "TF_VAR_environment=prod" >> $GITHUB_ENV
+          else
+            echo "TF_VAR_environment=prod" >> $GITHUB_ENV
+          fi
+  Deploy:
+    runs-on: ubuntu-latest
+    needs: SetEnvironment
+    env:
+      TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
+    steps:
+      - name: Print env
+        run: echo ${{env.TF_VAR_environment}}
