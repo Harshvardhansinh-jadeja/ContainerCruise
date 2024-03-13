@@ -28,6 +28,7 @@ jobs:
   SetEnvironment:
     runs-on: ubuntu-latest
     outputs:
+      workspace: ${{env.workspace}}
       environment: ${{env.branch}}
     steps:
       - name: Use condition
@@ -35,15 +36,18 @@ jobs:
           if [ ${{github.ref_name}} == 'dev' ]
           then 
               echo "branch=dev" >> $GITHUB_ENV
+              echo "workspace=default" >> $GITHUB_ENV
           elif [ ${{github.ref_name}} == 'sandbox' ]
           then 
               echo "branch=sandbox" >> $GITHUB_ENV
+              echo "workspace=sandbox" >> $GITHUB_ENV
           else
               echo "branch=prod" >> $GITHUB_ENV
+              echo "workspace=prod" >> $GITHUB_ENV
           fi
 
       - name: Print Branch
-        run: echo ${{env.branch}}
+        run: echo ${{env.branch}} ${{env.workspace}}
 
   Build:
     if: ${{inputs.build == 'true' }}
@@ -87,6 +91,7 @@ jobs:
       TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
       TF_VAR_username: ${{secrets.RDS_USERNAME}}
       TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+      workspace: ${{ needs.SetEnvironment.outputs.workspace }}
 
     steps:
       - name: Checkout
@@ -128,6 +133,9 @@ jobs:
 
       - name: initialize terraform
         run: terraform init
+
+      - name: Select workspace
+        run: terraform workspace select sandbox
 
       - name: plan terraform
         run: terraform plan
