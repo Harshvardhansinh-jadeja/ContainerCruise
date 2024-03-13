@@ -54,9 +54,12 @@ variable "aws_log" {
 }
 
 variable "environment" {
-  type = list(object({
-     name : string
-     value: any
-  }))
-  default = []
+  default = null
 }
+# variable "environment" {
+#   type = list(object({
+#      name : string
+#      value: any
+#   }))
+#   default = []
+# }

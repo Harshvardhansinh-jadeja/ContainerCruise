@@ -57,6 +57,8 @@ jobs:
     if: ${{inputs.build == 'true' }}
     needs: SetEnvironment
     environment: ${{needs.SetEnvironment.outputs.environment}}
+    env:
+      ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
 
     defaults:
       run:
@@ -73,8 +75,8 @@ jobs:
       - name: Install Packages
         run: npm install
 
-      - name: Build app
-        run: npm run build
+      - name: Build image
+        run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
     if: ${{inputs.infra == 'true' }}
