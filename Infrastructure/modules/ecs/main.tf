@@ -7,6 +7,15 @@ resource "aws_ecs_cluster_capacity_providers" "gen_provider" {
   capacity_providers = ["FARGATE"]
 }
 
+locals {
+  environment = flatten([for key,value in var.environment :
+    [{
+      name = key
+      value = value
+      }
+     ]])
+}
+
 resource "aws_ecs_task_definition" "gen-task-definition" {
   family = var.family
   network_mode = "awsvpc"
@@ -15,7 +24,8 @@ resource "aws_ecs_task_definition" "gen-task-definition" {
       name      =  var.container-name,
       image     = var.image
       essential = true,
-      environment: var.environment
+      environment: local.environment
+      # environment: var.environment
       portMappings = [  
         {
           containerPort = var.container-port
