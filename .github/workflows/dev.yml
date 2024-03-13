@@ -2,8 +2,8 @@ name: Dev Deploy
 
 on:
   workflow_dispatch:
-  push:
-    branches: "dev"
+  # push:
+  #   branches: "dev"
 
 jobs:
   Push:
@@ -14,7 +14,7 @@ jobs:
     with:
       apply: "true"
       environment: "dev"
-      build: "false"
+      build: "true"
       infra: "true"
 
     secrets:

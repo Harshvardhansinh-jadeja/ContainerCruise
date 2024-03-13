@@ -1,6 +1,6 @@
 variable "profile" {
   type = string
-  # default = "harsh" 
+  default = "harsh" 
 }
 variable "region" {
   type = string
@@ -70,4 +70,8 @@ variable "public_subnets" {
 variable "environment" {
   type = string
 
+}
+
+variable "tag" {
+  type = string
 }
