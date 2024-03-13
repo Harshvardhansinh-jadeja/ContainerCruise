@@ -80,7 +80,7 @@ jobs:
 
   Deploy:
     if: ${{inputs.infra == 'true' }}
-    needs: SetEnvironment
+    needs: [SetEnvironment, Build]
     environment: ${{needs.SetEnvironment.outputs.environment}}
     defaults:
       run:
