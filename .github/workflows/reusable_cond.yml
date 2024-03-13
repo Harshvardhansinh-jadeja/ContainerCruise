@@ -66,6 +66,9 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: Docker info
+        run: docker info
+
       - name: Before checkout
         run: ls -la
 
