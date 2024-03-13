@@ -135,7 +135,7 @@ jobs:
         run: terraform init
 
       - name: Select workspace
-        run: terraform workspace select sandbox
+        run: terraform workspace select $workspace
 
       - name: plan terraform
         run: terraform plan
