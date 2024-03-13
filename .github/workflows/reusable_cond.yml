@@ -70,7 +70,9 @@ jobs:
         run: docker info
 
       - name: Before checkout
-        run: ls -la
+        run: |
+          cd . 
+          ls -la
 
       - name: Checkout
         uses: actions/checkout@v4
