@@ -1,20 +1,22 @@
-name: Prod Deploy
+name: Deploy Application
 
 on:
-  workflow_dispatch:
-  # push:
-  #   branches: "sandbox"
+  push:
+    branches:
+      - dev
+      - sandbox
+      - main
 
 jobs:
   Push:
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/reusable_branch.yml
+
+    uses: ./.github/workflows/reusable_cond.yml
     with:
       apply: "true"
-      environment: "sandbox"
-      build: "false"
+      build: "true"
       infra: "true"
 
     secrets:

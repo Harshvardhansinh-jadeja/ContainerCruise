@@ -1,0 +1,41 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - sandbox
+      - main
+
+jobs:
+  path:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      infra: ${{ steps.filter.outputs.infra}}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'auth/**'
+            infra:
+              - 'Infrastructure/**'
+
+  Pull:
+    needs: path
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/reusable_cond.yml
+    with:
+      apply: false
+      build: ${{needs.path.outputs.frontend}}
+      infra: ${{needs.path.outputs.infra}}
+    secrets:
+      RDS_USERNAME: ${{secrets.RDS_USERNAME}}
+      RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
+      AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}

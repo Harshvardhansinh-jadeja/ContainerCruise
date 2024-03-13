@@ -1,11 +1,28 @@
-name: Deploy Application
+name: Build and Plan
 
 on:
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - dev
-  #     - sandbox
+  workflow_call:
+    inputs:
+      apply:
+        required: true
+        type: string
+      build:
+        required: true
+        type: string
+      infra:
+        required: true
+        type: string
+    secrets:
+      RDS_USERNAME:
+        required: true
+      RDS_PASSWORD:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   SetEnvironment:
@@ -29,11 +46,9 @@ jobs:
         run: echo ${{env.branch}}
 
   Build:
+    if: ${{inputs.build == 'true' }}
     needs: SetEnvironment
     environment: ${{needs.SetEnvironment.outputs.environment}}
-
-    env:
-      TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
 
     defaults:
       run:
@@ -54,8 +69,13 @@ jobs:
         run: npm run build
 
   Deploy:
+    if: ${{inputs.infra == 'true' }}
     needs: SetEnvironment
     environment: ${{needs.SetEnvironment.outputs.environment}}
+    defaults:
+      run:
+        working-directory: ./Infrastructure
+    runs-on: ubuntu-latest
 
     env:
       TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
@@ -67,14 +87,6 @@ jobs:
       TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
       TF_VAR_username: ${{secrets.RDS_USERNAME}}
       TF_VAR_password: ${{secrets.RDS_PASSWORD}}
-
-    defaults:
-      run:
-        working-directory: ./Infrastructure
-    permissions:
-      id-token: write
-      contents: read
-    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -120,5 +132,6 @@ jobs:
       - name: plan terraform
         run: terraform plan
 
-      # - name: Apply terraform
-      # run: terraform apply -auto-approve
+      - name: Apply terraform
+        if: ${{inputs.apply == 'true'}}
+        run: terraform apply -auto-approve
