@@ -60,9 +60,9 @@ jobs:
     env:
       ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
 
-    defaults:
-      run:
-        working-directory: ./auth
+    # defaults:
+    #   run:
+    #     working-directory: ./auth
 
     runs-on: ubuntu-latest
     steps:
@@ -80,7 +80,7 @@ jobs:
 
   Deploy:
     if: ${{inputs.infra == 'true' }}
-    needs: SetEnvironment
+    needs: [SetEnvironment, Build]
     environment: ${{needs.SetEnvironment.outputs.environment}}
     defaults:
       run:
@@ -112,6 +112,12 @@ jobs:
       - name: Get Identity
         run: aws sts get-caller-identity
 
+      - name: install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: initialize terraform
+        run: terraform init -backend-config=$backend
+
       - name: Check if there's an ECR already
         id: ECR
         continue-on-error: true
@@ -133,12 +139,6 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-      - name: install Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: initialize terraform
-        run: terraform init -backend-config=$backend
 
       - name: Select workspace
         run: terraform workspace select $workspace
