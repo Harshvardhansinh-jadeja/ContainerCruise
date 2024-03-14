@@ -17,7 +17,7 @@ jobs:
     with:
       apply: "true"
       build: "true"
-      infra: "true"
+      infra: "false"
 
     secrets:
       RDS_USERNAME: ${{secrets.RDS_USERNAME}}

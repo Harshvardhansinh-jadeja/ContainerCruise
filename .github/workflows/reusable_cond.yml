@@ -97,8 +97,8 @@ jobs:
       # - name: Install Packages
       #   run: npm install
 
-      - name: Build image
-        run: docker build -t ${{env.ECR_REPO}}-repo .
+      # - name: Build image
+      #   run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
     needs: [SetEnvironment, Build]
