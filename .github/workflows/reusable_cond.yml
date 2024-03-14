@@ -42,7 +42,7 @@ jobs:
             echo "workspace=default" >> $GITHUB_ENV
             echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
-          elif  [${{github.ref_name}} == 'sandbox']  || false
+          elif  [${{github.ref_name}} == sandbox]  || false
           #  ${{github.base_ref}} == 'sandbox' 
           then 
               echo "branch=sandbox" >> $GITHUB_ENV
