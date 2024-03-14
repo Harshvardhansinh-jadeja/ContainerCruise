@@ -5,7 +5,6 @@ module "bastion_host" {
   sg_ids = [ module.harshvardhan-bastion-sg.sg_id ]
 }
 
-
 # another way to create key pair 
 # resource "tls_private_key" "rsa-4096-example" {
 #   algorithm = "RSA"

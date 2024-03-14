@@ -14,3 +14,14 @@ module "harshvardhan-rds" {
     subnet_grp_name = module.harshvardhan-sub-group.sub_group_name
     vpc_sg  = [module.harshvardhan-RDS-sg.sg_id]
 }
+
+resource "aws_db_parameter_group" "postgresql_param_group" {
+  name   = "rds all audit"
+  family = "postgres"
+
+  parameter {
+    name  = "pgaudit.log"
+    value = "all"
+    apply_method = "immediate"
+  }
+}

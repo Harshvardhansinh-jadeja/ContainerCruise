@@ -16,7 +16,7 @@ jobs:
     uses: ./.github/workflows/reusable_cond.yml
     with:
       apply: "true"
-      build: "false"
+      build: "true"
       infra: "true"
 
     secrets:
