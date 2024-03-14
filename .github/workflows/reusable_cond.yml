@@ -35,13 +35,13 @@ jobs:
       - name: For push request
         if: github.event_name == 'push'
         run: |
-          if [[ ${{github.ref_name}} == 'dev']] 
+          if [ ${{github.ref_name}} == 'dev']
           then 
               echo "branch=dev" >> $GITHUB_ENV
               echo "workspace=default" >> $GITHUB_ENV
               echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
-          elif [[ ${{github.ref_name}} == 'sandbox' ]]
+          elif [ ${{github.ref_name}} == 'sandbox' ]
           then 
               echo "branch=sandbox" >> $GITHUB_ENV
               echo "workspace=sandbox" >> $GITHUB_ENV
@@ -55,13 +55,13 @@ jobs:
       - name: For Pull request
         if: github.event_name == 'pull_request'
         run: |
-          if [[ ${{github.base_ref}} == 'dev']] 
+          if [ ${{github.base_ref}} == 'dev'] 
           then 
               echo "branch=dev" >> $GITHUB_ENV
               echo "workspace=default" >> $GITHUB_ENV
               echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
-          elif [[ ${{github.base_ref}} == 'sandbox' ]]
+          elif [ ${{github.base_ref}} == 'sandbox' ]
           then 
               echo "branch=sandbox" >> $GITHUB_ENV
               echo "workspace=sandbox" >> $GITHUB_ENV
