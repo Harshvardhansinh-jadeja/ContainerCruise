@@ -107,9 +107,9 @@ jobs:
     # if: ${{inputs.infra == 'true' }} || ${{needs.Build.result == 'skipped'}}
     # need a Build job here
     environment: ${{needs.SetEnvironment.outputs.environment}}
-    defaults:
-      run:
-        working-directory: ./Infrastructure
+    # defaults:
+    # run:
+    #   working-directory: ./Infrastructure
     runs-on: ubuntu-latest
 
     steps:
