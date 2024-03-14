@@ -103,8 +103,9 @@ jobs:
   Deploy:
     needs: [SetEnvironment, Build]
     if: ${{always() && inputs.infra == 'true'}}
+    # if: always()  ${{inputs.infra == 'true'}}
     # if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
-    # if: ${{inputs.infra == 'true' }} || ${{needs.Build.result == 'skipped'}}
+
     # need a Build job here
     environment: ${{needs.SetEnvironment.outputs.environment}}
     # defaults:
