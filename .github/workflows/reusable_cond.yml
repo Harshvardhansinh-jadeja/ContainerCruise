@@ -35,7 +35,8 @@ jobs:
       - name: Use condition
         run: |
           if [ ${{github.ref_name}} == 'dev'] || [ ${{github.base_ref}} == 'dev' ]
-          then 
+          then  
+
               echo "branch=dev" >> $GITHUB_ENV
               echo "workspace=default" >> $GITHUB_ENV
               echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
