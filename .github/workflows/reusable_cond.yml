@@ -32,18 +32,15 @@ jobs:
     #   environment: ${{env.branch}}
     #   backend: ${{env.backend}}
     steps:
-      - name: Use for Push condition
-        # if: github.event_name == 'push'
+      - name: Use Condition
         run: |
-          if  [ ${{github.ref_name}} == 'dev' ]  ||  false
-          # ${{github.base_ref}} == 'dev' 
+          if  [ ${{github.ref_name}} == 'dev' ]  || [ ${{github.base_ref}} == 'dev' ] 
           then 
             echo "branch=dev" >> $GITHUB_ENV
             echo "workspace=default" >> $GITHUB_ENV
             echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
           elif  [ ${{github.ref_name}} == 'sandbox' ]  || [ ${{github.base_ref}} == 'sandbox' ]
-          #  ${{github.base_ref}} == 'sandbox' 
           then 
               echo "branch=sandbox" >> $GITHUB_ENV
               echo "workspace=sandbox" >> $GITHUB_ENV
@@ -54,44 +51,24 @@ jobs:
               echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
           fi
 
-      # - name: Use for Pull condition
-      #   if: github.event_name == 'pull_request'
-      #   run: |
-      #     if [ ${{github.base_ref}} == 'dev' ]
-      #     then
-      #       echo "branch=dev" >> $GITHUB_ENV
-      #       echo "workspace=default" >> $GITHUB_ENV
-      #       echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
-
-      #     elif [ ${{github.base_ref}} == 'sandbox' ]
-      #     then
-      #         echo "branch=sandbox" >> $GITHUB_ENV
-      #         echo "workspace=sandbox" >> $GITHUB_ENV
-      #         echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
-      #     else
-      #         echo "branch=prod" >> $GITHUB_ENV
-      #         echo "workspace=prod" >> $GITHUB_ENV
-      #         echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
-      #     fi
-
       - name: Print Branch
         run: echo ${{env.branch}} ${{env.workspace}}
 
-  # Build:
-  #   if: ${{inputs.build == 'true' }}
-  #   needs: SetEnvironment
-  #   environment: ${{needs.SetEnvironment.outputs.environment}}
-  #   env:
-  #     ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
+  Build:
+    if: ${{inputs.build == 'true' }}
+    needs: SetEnvironment
+    environment: ${{needs.SetEnvironment.outputs.environment}}
+    env:
+      ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
 
-  #   defaults:
-  #     run:
-  #       working-directory: ./auth
+    defaults:
+      run:
+        working-directory: ./auth
 
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
   #     # - name: Install NPM
   #     #   run: sudo apt update && sudo apt install npm
@@ -102,35 +79,35 @@ jobs:
   #     - name: Build image
   #       run: docker build -t ${{env.ECR_REPO}}-repo .
 
-  # Deploy:
-  #   needs: [SetEnvironment, Build]
-  #   # if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
-  #   if: ${{always() && inputs.infra == 'true'}}
-  #   # if: always()  ${{inputs.infra == 'true'}} --> Not working
+  Deploy:
+    needs: [SetEnvironment, Build]
+    # if: always() &&  ${{inputs.infra == 'true'}}
+    # if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
+    if: ${{always() && inputs.infra == 'true'}}
 
-  #   # need a Build job here
-  #   environment: ${{needs.SetEnvironment.outputs.environment}}
-  #   defaults:
-  #     run:
-  #       working-directory: ./Infrastructure
-  #   runs-on: ubuntu-latest
+    #   # need a Build job here
+    environment: ${{needs.SetEnvironment.outputs.environment}}
+    defaults:
+      run:
+        working-directory: ./Infrastructure
+    runs-on: ubuntu-latest
 
-  #   env:
-  #     TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
-  #     TF_VAR_tag: ${{github.sha}}
-  #     ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
-  #     TF_VAR_ecr_repo: "${{needs.SetEnvironment.outputs.environment}}-repo"
-  #     TF_VAR_profile: "harsh"
-  #     TF_VAR_region: "us-west-2"
-  #     TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
-  #     TF_VAR_username: ${{secrets.RDS_USERNAME}}
-  #     TF_VAR_password: ${{secrets.RDS_PASSWORD}}
-  #     workspace: ${{ needs.SetEnvironment.outputs.workspace }}
-  #     backend: ${{needs.SetEnvironment.outputs.backend}}
+    # env:
+    #   TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
+    #   TF_VAR_tag: ${{github.sha}}
+    #   ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
+    #   TF_VAR_ecr_repo: "${{needs.SetEnvironment.outputs.environment}}-repo"
+    #   TF_VAR_profile: "harsh"
+    #   TF_VAR_region: "us-west-2"
+    #   TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+    #   TF_VAR_username: ${{secrets.RDS_USERNAME}}
+    #   TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+    #   workspace: ${{ needs.SetEnvironment.outputs.workspace }}
+    #   backend: ${{needs.SetEnvironment.outputs.backend}}
 
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
   #     - name: Configure AWS Credentials
   #       uses: aws-actions/configure-aws-credentials@v4
