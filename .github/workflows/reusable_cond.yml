@@ -35,26 +35,22 @@ jobs:
       - name: Use for Push condition
         # if: github.event_name == 'push'
         run: |
-          DOO = ${{github.base_ref}}
-          FOO="${ DOO :- lorem }"
-          echo "Value of foo is $FOO"
+          if  ${{github.ref_name}} == 'dev'  ||  ${{github.base_ref}} == 'dev' 
+          then 
+            echo "branch=dev" >> $GITHUB_ENV
+            echo "workspace=default" >> $GITHUB_ENV
+            echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
-          # if [ ${{github.ref_name}} == 'dev' ]
-          # then 
-          #   echo "branch=dev" >> $GITHUB_ENV
-          #   echo "workspace=default" >> $GITHUB_ENV
-          #   echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
-
-          # elif [ ${{github.ref_name}} == 'sandbox' ]
-          # then 
-          #     echo "branch=sandbox" >> $GITHUB_ENV
-          #     echo "workspace=sandbox" >> $GITHUB_ENV
-          #     echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
-          # else
-          #     echo "branch=prod" >> $GITHUB_ENV
-          #     echo "workspace=prod" >> $GITHUB_ENV
-          #     echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
-          # fi
+          elif  ${{github.ref_name}} == 'sandbox'  ||  ${{github.base_ref}} == 'sandbox' 
+          then 
+              echo "branch=sandbox" >> $GITHUB_ENV
+              echo "workspace=sandbox" >> $GITHUB_ENV
+              echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
+          else
+              echo "branch=prod" >> $GITHUB_ENV
+              echo "workspace=prod" >> $GITHUB_ENV
+              echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
+          fi
 
       # - name: Use for Pull condition
       #   if: github.event_name == 'pull_request'
