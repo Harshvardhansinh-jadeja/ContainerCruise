@@ -1,4 +1,5 @@
 resource "aws_db_instance" "gen-rds" {
+    depends_on= [aws_db_parameter_group.postgresql_param_group]
     identifier = var.name
     instance_class = var.instance_class
     storage_type = var.storage_type
@@ -15,4 +16,15 @@ resource "aws_db_instance" "gen-rds" {
         "Name" = var.name
     }
     vpc_security_group_ids = var.vpc_sg
+}
+
+resource "aws_db_parameter_group" "postgresql_param_group" {
+  name   = "rds_all_audit"
+  family = "postgres"
+
+  parameter {
+    name  = "pgaudit.log"
+    value = "all"
+    apply_method = "immediate"
+  }
 }
