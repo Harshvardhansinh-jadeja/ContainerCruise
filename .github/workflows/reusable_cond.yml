@@ -35,7 +35,8 @@ jobs:
       - name: Use for Push condition
         # if: github.event_name == 'push'
         run: |
-          FOO="${ ${{github.base_ref}} :- lorem }"
+          DOO = ${{github.base_ref}}
+          FOO="${ DOO :- lorem }"
           echo "Value of foo is $FOO"
 
           # if [ ${{github.ref_name}} == 'dev' ]
