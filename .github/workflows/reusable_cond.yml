@@ -34,19 +34,18 @@ jobs:
     steps:
       - name: Use condition
         run: |
-          if [ ${{github.ref_name}} == 'dev'] 
+          if [ ${{github.ref_name}} == 'dev' ]
           then 
-              echo "branch=dev" >> $GITHUB_ENV
-              echo "workspace=default" >> $GITHUB_ENV
-              echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
+            echo "branch=dev" >> $GITHUB_ENV
+            echo "workspace=dev" >> $GITHUB_ENV
+            echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
-          elif [ ${{github.ref_name}} == 'sandbox' ] 
+          elif [ ${{github.ref_name}} == 'sandbox' ]
           then 
               echo "branch=sandbox" >> $GITHUB_ENV
               echo "workspace=sandbox" >> $GITHUB_ENV
               echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
           else
-
               echo "branch=prod" >> $GITHUB_ENV
               echo "workspace=prod" >> $GITHUB_ENV
               echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
