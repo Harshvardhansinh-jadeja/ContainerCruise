@@ -27,161 +27,155 @@ permissions:
 jobs:
   SetEnvironment:
     runs-on: ubuntu-latest
-    outputs:
-      workspace: ${{env.workspace}}
-      environment: ${{env.branch}}
-      backend: ${{env.backend}}
+    # outputs:
+    #   workspace: ${{env.workspace}}
+    #   environment: ${{env.branch}}
+    #   backend: ${{env.backend}}
     steps:
       - name: Use for Push condition
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         run: |
-          if [ ${{github.ref_name}} == 'dev' ]
-          then 
-            echo "branch=dev" >> $GITHUB_ENV
-            echo "workspace=default" >> $GITHUB_ENV
-            echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
+          FOO="${ ${{github.base_ref}} :- lorem }"
+          echo "Value of foo is $FOO"
 
-          elif [ ${{github.ref_name}} == 'sandbox' ]
-          then 
-              echo "branch=sandbox" >> $GITHUB_ENV
-              echo "workspace=sandbox" >> $GITHUB_ENV
-              echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
-          else
-              echo "branch=prod" >> $GITHUB_ENV
-              echo "workspace=prod" >> $GITHUB_ENV
-              echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
-          fi
+          # if [ ${{github.ref_name}} == 'dev' ]
+          # then 
+          #   echo "branch=dev" >> $GITHUB_ENV
+          #   echo "workspace=default" >> $GITHUB_ENV
+          #   echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
-      - name: Use for Pull condition
-        if: github.event_name == 'pull_request'
-        run: |
-          if [ ${{github.base_ref}} == 'dev' ]
-          then 
-            echo "branch=dev" >> $GITHUB_ENV
-            echo "workspace=default" >> $GITHUB_ENV
-            echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
+          # elif [ ${{github.ref_name}} == 'sandbox' ]
+          # then 
+          #     echo "branch=sandbox" >> $GITHUB_ENV
+          #     echo "workspace=sandbox" >> $GITHUB_ENV
+          #     echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
+          # else
+          #     echo "branch=prod" >> $GITHUB_ENV
+          #     echo "workspace=prod" >> $GITHUB_ENV
+          #     echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
+          # fi
 
-          elif [ ${{github.base_ref}} == 'sandbox' ]
-          then 
-              echo "branch=sandbox" >> $GITHUB_ENV
-              echo "workspace=sandbox" >> $GITHUB_ENV
-              echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
-          else
-              echo "branch=prod" >> $GITHUB_ENV
-              echo "workspace=prod" >> $GITHUB_ENV
-              echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
-          fi
+      # - name: Use for Pull condition
+      #   if: github.event_name == 'pull_request'
+      #   run: |
+      #     if [ ${{github.base_ref}} == 'dev' ]
+      #     then
+      #       echo "branch=dev" >> $GITHUB_ENV
+      #       echo "workspace=default" >> $GITHUB_ENV
+      #       echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
+
+      #     elif [ ${{github.base_ref}} == 'sandbox' ]
+      #     then
+      #         echo "branch=sandbox" >> $GITHUB_ENV
+      #         echo "workspace=sandbox" >> $GITHUB_ENV
+      #         echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
+      #     else
+      #         echo "branch=prod" >> $GITHUB_ENV
+      #         echo "workspace=prod" >> $GITHUB_ENV
+      #         echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
+      #     fi
 
       - name: Print Branch
         run: echo ${{env.branch}} ${{env.workspace}}
 
-  Build:
-    if: ${{inputs.build == 'true' }}
-    needs: SetEnvironment
-    environment: ${{needs.SetEnvironment.outputs.environment}}
-    env:
-      ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
+  # Build:
+  #   if: ${{inputs.build == 'true' }}
+  #   needs: SetEnvironment
+  #   environment: ${{needs.SetEnvironment.outputs.environment}}
+  #   env:
+  #     ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
 
-    defaults:
-      run:
-        working-directory: ./auth
+  #   defaults:
+  #     run:
+  #       working-directory: ./auth
 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      # - name: Install NPM
-      #   run: sudo apt update && sudo apt install npm
+  #     # - name: Install NPM
+  #     #   run: sudo apt update && sudo apt install npm
 
-      # - name: Install Packages
-      #   run: npm install
+  #     # - name: Install Packages
+  #     #   run: npm install
 
-      # - name: Build image
-      #   run: docker build -t ${{env.ECR_REPO}}-repo .
+  #     - name: Build image
+  #       run: docker build -t ${{env.ECR_REPO}}-repo .
 
-  Deploy:
-    needs: [SetEnvironment, Build]
-    if: ${{always() && inputs.infra == 'true'}}
-    # if: always()  ${{inputs.infra == 'true'}}
-    # if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
+  # Deploy:
+  #   needs: [SetEnvironment, Build]
+  #   # if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
+  #   if: ${{always() && inputs.infra == 'true'}}
+  #   # if: always()  ${{inputs.infra == 'true'}} --> Not working
 
-    # need a Build job here
-    environment: ${{needs.SetEnvironment.outputs.environment}}
-    # defaults:
-    # run:
-    #   working-directory: ./Infrastructure
-    runs-on: ubuntu-latest
+  #   # need a Build job here
+  #   environment: ${{needs.SetEnvironment.outputs.environment}}
+  #   defaults:
+  #     run:
+  #       working-directory: ./Infrastructure
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Check condition
-        run: echo ${{needs.Build.result}}
+  #   env:
+  #     TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
+  #     TF_VAR_tag: ${{github.sha}}
+  #     ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
+  #     TF_VAR_ecr_repo: "${{needs.SetEnvironment.outputs.environment}}-repo"
+  #     TF_VAR_profile: "harsh"
+  #     TF_VAR_region: "us-west-2"
+  #     TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+  #     TF_VAR_username: ${{secrets.RDS_USERNAME}}
+  #     TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+  #     workspace: ${{ needs.SetEnvironment.outputs.workspace }}
+  #     backend: ${{needs.SetEnvironment.outputs.backend}}
 
-      - name: Check skipped
-        run: echo ${{needs.Build.result == 'skipped'}}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Check success
-        run: echo ${{needs.Build.result == 'success'}}
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
+  #         aws-region: us-west-2
 
-    # env:
-    #   TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
-    #   TF_VAR_tag: ${{github.sha}}
-    #   ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
-    #   TF_VAR_ecr_repo: "${{needs.SetEnvironment.outputs.environment}}-repo"
-    #   TF_VAR_profile: "harsh"
-    #   TF_VAR_region: "us-west-2"
-    #   TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
-    #   TF_VAR_username: ${{secrets.RDS_USERNAME}}
-    #   TF_VAR_password: ${{secrets.RDS_PASSWORD}}
-    #   workspace: ${{ needs.SetEnvironment.outputs.workspace }}
-    #   backend: ${{needs.SetEnvironment.outputs.backend}}
-    # steps:
-    #   - name: Checkout
-    #     uses: actions/checkout@v4
+  #     - name: Get Identity
+  #       run: aws sts get-caller-identity
 
-    #   - name: Configure AWS Credentials
-    #     uses: aws-actions/configure-aws-credentials@v4
-    #     with:
-    #       role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
-    #       aws-region: us-west-2
+  #     - name: install Terraform
+  #       uses: hashicorp/setup-terraform@v3
 
-    #   - name: Get Identity
-    #     run: aws sts get-caller-identity
+  #     - name: initialize terraform
+  #       run: terraform init -backend-config=$backend
 
-    #   - name: install Terraform
-    #     uses: hashicorp/setup-terraform@v3
+  #     - name: Check if there's an ECR already
+  #       id: ECR
+  #       continue-on-error: true
+  #       run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
 
-    #   - name: initialize terraform
-    #     run: terraform init -backend-config=$backend
+  #     - name: Create ECR
+  #       if: ${{steps.ECR.outcome != 'success'}}
+  #       run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
 
-    #   - name: Check if there's an ECR already
-    #     id: ECR
-    #     continue-on-error: true
-    #     run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
+  #     - name: Login to Amazon ECR
+  #       id: login-ecr
+  #       uses: aws-actions/amazon-ecr-login@v2
 
-    #   - name: Create ECR
-    #     if: ${{steps.ECR.outcome != 'success'}}
-    #     run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
+  #     - name: Build, tag, and push docker image to Amazon ECR
+  #       env:
+  #         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  #         REPOSITORY: "${{needs.SetEnvironment.outputs.environment}}-repo"
+  #         IMAGE_TAG: ${{github.sha}}
+  #       run: |
+  #         docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
+  #         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-    #   - name: Login to Amazon ECR
-    #     id: login-ecr
-    #     uses: aws-actions/amazon-ecr-login@v2
+  #     - name: Select workspace
+  #       run: terraform workspace select $workspace
 
-    #   - name: Build, tag, and push docker image to Amazon ECR
-    #     env:
-    #       REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #       REPOSITORY: "${{needs.SetEnvironment.outputs.environment}}-repo"
-    #       IMAGE_TAG: ${{github.sha}}
-    #     run: |
-    #       docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
-    #       docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+  #     - name: plan terraform
+  #       run: terraform plan
 
-    #   - name: Select workspace
-    #     run: terraform workspace select $workspace
-
-    #   - name: plan terraform
-    #     run: terraform plan
-
-    #   - name: Apply terraform
-    #     if: ${{inputs.apply == 'true'}}
-    #     run: terraform apply -auto-approve
+  #     - name: Apply terraform
+  #       if: ${{inputs.apply == 'true'}}
+  #       run: terraform apply -auto-approve
