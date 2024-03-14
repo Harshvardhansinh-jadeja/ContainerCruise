@@ -32,15 +32,36 @@ jobs:
       environment: ${{env.branch}}
       backend: ${{env.backend}}
     steps:
-      - name: Use condition
+      - name: Use for Push condition
+        if: github.event_name == 'push'
         run: |
-          if [ ${{github.ref_name}} == 'dev'] || [ ${{github.base_ref}} == 'dev' ]
-          then  
+          if [ ${{github.ref_name}} == 'dev' ]
+          then 
+            echo "branch=dev" >> $GITHUB_ENV
+            echo "workspace=default" >> $GITHUB_ENV
+            echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
-              echo "branch=dev" >> $GITHUB_ENV
-              echo "workspace=default" >> $GITHUB_ENV
-              echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
-          elif [ ${{github.ref_name}} == 'sandbox' ] || [${{github.base_ref}} == 'sandbox']
+          elif [ ${{github.ref_name}} == 'sandbox' ]
+          then 
+              echo "branch=sandbox" >> $GITHUB_ENV
+              echo "workspace=sandbox" >> $GITHUB_ENV
+              echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
+          else
+              echo "branch=prod" >> $GITHUB_ENV
+              echo "workspace=prod" >> $GITHUB_ENV
+              echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
+          fi
+
+      - name: Use for Pull condition
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ ${{github.base_ref}} == 'dev' ]
+          then 
+            echo "branch=dev" >> $GITHUB_ENV
+            echo "workspace=default" >> $GITHUB_ENV
+            echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
+
+          elif [ ${{github.base_ref}} == 'sandbox' ]
           then 
               echo "branch=sandbox" >> $GITHUB_ENV
               echo "workspace=sandbox" >> $GITHUB_ENV
@@ -82,7 +103,6 @@ jobs:
   Deploy:
     if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
     # if: ${{inputs.infra == 'true' }} || ${{needs.Build.result == 'skipped'}}
-    # need a Build job here
     needs: [SetEnvironment, Build]
     environment: ${{needs.SetEnvironment.outputs.environment}}
     defaults:
