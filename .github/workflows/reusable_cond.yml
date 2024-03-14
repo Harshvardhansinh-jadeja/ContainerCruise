@@ -60,26 +60,27 @@ jobs:
     env:
       ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
 
-    # defaults:
-    #   run:
-    #     working-directory: ./auth
+    defaults:
+      run:
+        working-directory: ./auth
 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install NPM
-        run: sudo apt update && sudo apt install npm
+      # - name: Install NPM
+      #   run: sudo apt update && sudo apt install npm
 
-      - name: Install Packages
-        run: npm install
+      # - name: Install Packages
+      #   run: npm install
 
       - name: Build image
         run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
-    if: ${{inputs.infra == 'true' }}
+    if: ${{inputs.infra == 'true' }} || ${{needs.Build.result == 'skipped'}}
+    # need a Build job here
     needs: [SetEnvironment, Build]
     environment: ${{needs.SetEnvironment.outputs.environment}}
     defaults:
