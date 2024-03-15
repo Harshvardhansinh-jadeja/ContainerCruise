@@ -40,7 +40,7 @@ jobs:
               - 'Infrastructure/**'
 
   Build:
-    if: ${{always() && needs.path.result == 'skipped'}}
+    if: ${{always() && needs.path.result == 'skipped' || needs.path.outputs.frontend == 'true '}}
     needs: path
     environment: sandbox
 
