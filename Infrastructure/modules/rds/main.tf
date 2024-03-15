@@ -1,4 +1,4 @@
-# This is only RDS instance not cluster
+# This is only RDS instance not cluster's
 resource "aws_db_instance" "gen-rds" {
     depends_on= [aws_db_parameter_group.postgresql_param_group]
     identifier = var.name
