@@ -40,7 +40,7 @@ jobs:
               - 'Infrastructure/**'
 
   Build:
-    if: always() && ${{needs.path.result == 'skipped'}}
+    if: ${{ always() && ( needs.path.result == 'skipped' || needs.path.outputs.frontend == 'true' ) }}
     needs: path
     environment: dev
 
@@ -58,7 +58,7 @@ jobs:
 
   Deploy:
     needs: [Build, path]
-    if: ${{always() && needs.path.outputs.infra == 'true'}}
+    if: ${{ always() && ( needs.path.result == 'skipped' || needs.path.outputs.infra == 'true' ) }}
     environment: dev
 
     defaults:
