@@ -9,121 +9,134 @@ on:
     branches:
       - dev
 
-permissions:
-  id-token: write
-  contents: read
-
-env:
-  RDS_USERNAME: ${{secrets.RDS_USERNAME}}
-  RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
-  AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
-  ECR_REPO: "dev-repo"
-  TF_VAR_ecr_repo: "dev-repo"
-
 jobs:
-  path:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+  Dev:
     permissions:
+      id-token: write
+      contents: read
       pull-requests: read
-    outputs:
-      infra: ${{ steps.filter.outputs.infra}}
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            frontend:
-              - 'auth/**'
-            infra:
-              - 'Infrastructure/**'
 
-  Build:
-    if: ${{ always() && ( needs.path.result == 'skipped' || needs.path.outputs.frontend == 'true' ) }}
-    needs: path
-    environment: dev
+    uses: ./.github/workflows/reusable_env.yml
+    with:
+      environment: "dev"
+      workspace: "default"
+      backend: "dev"
 
-    defaults:
-      run:
-        working-directory: ./auth
+    secrets:
+      RDS_USERNAME: ${{secrets.RDS_USERNAME}}
+      RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
+      AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+# env:
+#   RDS_USERNAME: ${{secrets.RDS_USERNAME}}
+#   RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
+#   AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+#   ECR_REPO: "dev-repo"
+#   TF_VAR_ecr_repo: "dev-repo"
 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+# jobs:
+#   path:
+#     if: github.event_name == 'pull_request'
+#     runs-on: ubuntu-latest
+#     permissions:
+#       pull-requests: read
+#     outputs:
+#       infra: ${{ steps.filter.outputs.infra}}
+#       frontend: ${{ steps.filter.outputs.frontend }}
+#     steps:
+#       - uses: dorny/paths-filter@v3
+#         id: filter
+#         with:
+#           filters: |
+#             frontend:
+#               - 'auth/**'
+#             infra:
+#               - 'Infrastructure/**'
 
-      # - name: Build image
-      #   run: docker build -t ${{env.ECR_REPO}}-repo .
+#   Build:
+#     if: ${{ always() && ( needs.path.result == 'skipped' || needs.path.outputs.frontend == 'true' ) }}
+#     needs: path
+#     environment: dev
 
-  Deploy:
-    needs: [Build, path]
-    if: ${{ always() && ( needs.path.result == 'skipped' || needs.path.outputs.infra == 'true' ) }}
-    environment: dev
+#     defaults:
+#       run:
+#         working-directory: ./auth
 
-    defaults:
-      run:
-        working-directory: ./Infrastructure
-    runs-on: ubuntu-latest
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
 
-    env:
-      TF_VAR_environment: dev
-      TF_VAR_tag: ${{github.sha}}
-      TF_VAR_profile: "harsh"
-      TF_VAR_region: "us-west-2"
-      TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
-      TF_VAR_username: ${{secrets.RDS_USERNAME}}
-      TF_VAR_password: ${{secrets.RDS_PASSWORD}}
-      workspace: default
-      backend: dev
+#       - name: Build image
+#         run: docker build -t ${{env.ECR_REPO}}-repo .
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+#   Deploy:
+#     needs: [Build, path]
+#     if: ${{ always() && ( needs.path.result == 'skipped' || needs.path.outputs.infra == 'true' ) }}
+#     environment: dev
 
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
-      #     aws-region: us-west-2
+#     defaults:
+#       run:
+#         working-directory: ./Infrastructure
+#     runs-on: ubuntu-latest
 
-      # - name: Get Identity
-      #   run: aws sts get-caller-identity
+#     env:
+#       TF_VAR_environment: dev
+#       TF_VAR_tag: ${{github.sha}}
+#       TF_VAR_profile: "harsh"
+#       TF_VAR_region: "us-west-2"
+#       TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+#       TF_VAR_username: ${{secrets.RDS_USERNAME}}
+#       TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+#       workspace: default
+#       backend: dev
 
-      # - name: install Terraform
-      #   uses: hashicorp/setup-terraform@v3
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
 
-      # - name: initialize terraform
-      #   run: terraform init -backend-config=dev.s3.tfbackend
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
+#           aws-region: us-west-2
 
-      # - name: Check if there's an ECR already
-      #   id: ECR
-      #   continue-on-error: true
-      #   run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
+#       - name: Get Identity
+#         run: aws sts get-caller-identity
 
-      # - name: Create ECR
-      #   if: ${{steps.ECR.outcome != 'success'}}
-      #   run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
+#       - name: install Terraform
+#         uses: hashicorp/setup-terraform@v3
 
-      # - name: Login to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v2
+#       - name: initialize terraform
+#         run: terraform init -backend-config=dev.s3.tfbackend
 
-      # - name: Build, tag, and push docker image to Amazon ECR
-      #   env:
-      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     REPOSITORY: "dev-repo"
-      #     IMAGE_TAG: ${{github.sha}}
-      #   run: |
-      #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
-      #     docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+#       - name: Check if there's an ECR already
+#         id: ECR
+#         continue-on-error: true
+#         run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
 
-      # - name: Select workspace
-      #   run: terraform workspace select default
+#       - name: Create ECR
+#         if: ${{steps.ECR.outcome != 'success'}}
+#         run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
 
-      # - name: plan terraform
-      #   run: terraform plan
+#       - name: Login to Amazon ECR
+#         id: login-ecr
+#         uses: aws-actions/amazon-ecr-login@v2
 
-      # - name: Apply terraform
-      #   if: ${{inputs.apply == 'true'}}
-      #   run: terraform apply -auto-approve
+#       - name: Build, tag, and push docker image to Amazon ECR
+#         env:
+#           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#           REPOSITORY: "dev-repo"
+#           IMAGE_TAG: ${{github.sha}}
+#         run: |
+#           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
+#           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+#       - name: Select workspace
+#         run: terraform workspace select default
+
+#       - name: plan terraform
+#         run: terraform plan
+
+#       - name: Apply terraform
+#         if: ${{github.event_name == 'push'}}
+#         run: terraform apply -auto-approve
