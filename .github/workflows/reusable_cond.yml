@@ -32,36 +32,16 @@ jobs:
       environment: ${{env.branch}}
       backend: ${{env.backend}}
     steps:
-      - name: Use for Push condition
-        if: github.event_name == 'push'
+      - name: Use Condition
         run: |
-          if [ ${{github.ref_name}} == 'dev' ]
+          # have Space between bracket and condition  
+          if  [ ${{github.ref_name}} == 'dev' ]  || [ ${{github.base_ref}} == 'dev' ] 
           then 
             echo "branch=dev" >> $GITHUB_ENV
             echo "workspace=default" >> $GITHUB_ENV
             echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
 
-          elif [ ${{github.ref_name}} == 'sandbox' ]
-          then 
-              echo "branch=sandbox" >> $GITHUB_ENV
-              echo "workspace=sandbox" >> $GITHUB_ENV
-              echo "backend=sandbox.s3.tfbackend" >> $GITHUB_ENV
-          else
-              echo "branch=prod" >> $GITHUB_ENV
-              echo "workspace=prod" >> $GITHUB_ENV
-              echo "backend=prod.s3.tfbackend" >> $GITHUB_ENV
-          fi
-
-      - name: Use for Pull condition
-        if: github.event_name == 'pull_request'
-        run: |
-          if [ ${{github.base_ref}} == 'dev' ]
-          then 
-            echo "branch=dev" >> $GITHUB_ENV
-            echo "workspace=default" >> $GITHUB_ENV
-            echo "backend=dev.s3.tfbackend" >> $GITHUB_ENV
-
-          elif [ ${{github.base_ref}} == 'sandbox' ]
+          elif  [ ${{github.ref_name}} == 'sandbox' ]  || [ ${{github.base_ref}} == 'sandbox' ]
           then 
               echo "branch=sandbox" >> $GITHUB_ENV
               echo "workspace=sandbox" >> $GITHUB_ENV
@@ -91,19 +71,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Install NPM
-      #   run: sudo apt update && sudo apt install npm
+      #     # - name: Install NPM
+      #     #   run: sudo apt update && sudo apt install npm
 
-      # - name: Install Packages
-      #   run: npm install
+      #     # - name: Install Packages
+      #     #   run: npm install
 
       - name: Build image
         run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
-    if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
-    # if: ${{inputs.infra == 'true' }} || ${{needs.Build.result == 'skipped'}}
     needs: [SetEnvironment, Build]
+    # if: always() &&  ${{inputs.infra == 'true'}}
+    # if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
+    if: ${{always() && inputs.infra == 'true'}}
+
     environment: ${{needs.SetEnvironment.outputs.environment}}
     defaults:
       run:
@@ -122,6 +104,7 @@ jobs:
       TF_VAR_password: ${{secrets.RDS_PASSWORD}}
       workspace: ${{ needs.SetEnvironment.outputs.workspace }}
       backend: ${{needs.SetEnvironment.outputs.backend}}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4

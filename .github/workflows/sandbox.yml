@@ -1,13 +1,13 @@
-name: Dev Deploy
+name: Sandbox Deploy
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - sandbox
   pull_request:
     branches:
-      - dev
+      - sandbox
 
 permissions:
   id-token: write
@@ -17,8 +17,8 @@ env:
   RDS_USERNAME: ${{secrets.RDS_USERNAME}}
   RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
   AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
-  ECR_REPO: "dev-repo"
-  TF_VAR_ecr_repo: "dev-repo"
+  ECR_REPO: "sandbox-repo"
+  TF_VAR_ecr_repo: "sandbox-repo"
 
 jobs:
   path:
@@ -40,9 +40,9 @@ jobs:
               - 'Infrastructure/**'
 
   Build:
-    if: always() && ${{needs.path.result == 'skipped'}}
+    if: ${{always() && needs.path.result == 'skipped' || needs.path.outputs.frontend == 'true '}}
     needs: path
-    environment: dev
+    environment: sandbox
 
     defaults:
       run:
@@ -59,7 +59,7 @@ jobs:
   Deploy:
     needs: [Build, path]
     if: ${{always() && needs.path.outputs.infra == 'true'}}
-    environment: dev
+    environment: sandbox
 
     defaults:
       run:
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TF_VAR_environment: dev
+      TF_VAR_environment: sandbox
       TF_VAR_tag: ${{github.sha}}
       TF_VAR_profile: "harsh"
       TF_VAR_region: "us-west-2"
@@ -75,7 +75,7 @@ jobs:
       TF_VAR_username: ${{secrets.RDS_USERNAME}}
       TF_VAR_password: ${{secrets.RDS_PASSWORD}}
       workspace: default
-      backend: dev
+      backend: sandbox
 
     steps:
       - name: Checkout
@@ -94,7 +94,7 @@ jobs:
       #   uses: hashicorp/setup-terraform@v3
 
       # - name: initialize terraform
-      #   run: terraform init -backend-config=dev.s3.tfbackend
+      #   run: terraform init -backend-config=sandbox.s3.tfbackend
 
       # - name: Check if there's an ECR already
       #   id: ECR
@@ -112,7 +112,7 @@ jobs:
       # - name: Build, tag, and push docker image to Amazon ECR
       #   env:
       #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     REPOSITORY: "dev-repo"
+      #     REPOSITORY: "sandbox-repo"
       #     IMAGE_TAG: ${{github.sha}}
       #   run: |
       #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth

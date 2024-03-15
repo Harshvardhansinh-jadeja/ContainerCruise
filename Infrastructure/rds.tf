@@ -14,3 +14,4 @@ module "harshvardhan-rds" {
     subnet_grp_name = module.harshvardhan-sub-group.sub_group_name
     vpc_sg  = [module.harshvardhan-RDS-sg.sg_id]
 }
+
