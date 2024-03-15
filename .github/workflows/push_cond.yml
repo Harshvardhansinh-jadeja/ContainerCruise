@@ -1,11 +1,12 @@
 name: Deploy Application
 
 on:
-  push:
-    branches:
-      - dev
-      - sandbox
-      - main
+  workflow_dispatch:
+  # push:
+  # branches:
+  #   - dev
+  #   - sandbox
+  #   - main
 
 jobs:
   Push:

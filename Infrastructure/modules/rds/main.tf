@@ -19,8 +19,8 @@ resource "aws_db_instance" "gen-rds" {
 }
 
 resource "aws_db_parameter_group" "postgresql_param_group" {
-  name   = "rds_all_audit"
-  family = "postgres"
+  name   = "rds"
+  family = "postgres16"
 
   parameter {
     name  = "pgaudit.log"
