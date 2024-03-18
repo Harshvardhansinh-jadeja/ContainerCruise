@@ -7,6 +7,7 @@ output "bastion_public_IP" {
 }
 
 output "endpoint" {
+  # value = module.harshvardhan-rds.endpoint
   value = module.harshvardhan-rds.endpoint
 }
 

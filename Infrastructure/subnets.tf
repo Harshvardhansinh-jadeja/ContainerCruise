@@ -1,5 +1,5 @@
 resource "aws_subnet" "harshvardhan-private-subnets" {
-  count = 2
+  count = 3
   vpc_id =module.harshvardhan-vpc.vpc_id
   cidr_block = var.private_subnets[count.index]
   availability_zone = var.az[count.index]
@@ -9,7 +9,7 @@ resource "aws_subnet" "harshvardhan-private-subnets" {
 }
 
 resource "aws_subnet" "harshvardhan-public-subnets" {
-  count = 2
+  count = 3
   vpc_id = module.harshvardhan-vpc.vpc_id
   cidr_block = var.public_subnets[count.index]
   availability_zone = var.az[count.index]
