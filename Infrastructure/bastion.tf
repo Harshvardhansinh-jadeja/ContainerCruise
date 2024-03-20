@@ -2,6 +2,7 @@ module "bastion_host" {
   source =  "./modules/ec2"
   subnet_id = aws_subnet.harshvardhan-public-subnets[0].id
   name = "${var.environment}-bastion"
+  instance_size = "t2.micro"
   sg_ids = [ module.harshvardhan-bastion-sg.sg_id ]
 }
 

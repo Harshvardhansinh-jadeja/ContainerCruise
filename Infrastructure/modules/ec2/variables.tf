@@ -8,3 +8,7 @@ variable "sg_ids" {
     type = list(string)
 }
 
+variable "instance_size" {
+  type = string
+}
+

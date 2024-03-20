@@ -21,7 +21,7 @@ module "harshvardhan-cluster" {
   container-port= var.container-port
   image =  "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.ecr_repo}:${var.tag}"
   role_arn = data.aws_iam_role.task_exec-role.arn
-  service_name = "harshvardhan-service"
+  service_name = "${var.environment}-service"
   desired_count   = 1
   tg_arn = module.harshvardhan-tg.tg_arn
    subnets = [aws_subnet.harshvardhan-private-subnets[0].id,aws_subnet.harshvardhan-private-subnets[1].id]
