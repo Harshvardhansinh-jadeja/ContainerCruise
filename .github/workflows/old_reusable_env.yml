@@ -62,8 +62,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Build image
-      #   run: docker build -t ${{env.ECR_REPO}}-repo .
+      - name: Build image
+        run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
     needs: [Build, path]
@@ -99,29 +99,24 @@ jobs:
       - name: Get Identity
         run: aws sts get-caller-identity
 
-      # - name: install Terraform
-      #   uses: hashicorp/setup-terraform@v3
+      - name: install Terraform
+        uses: hashicorp/setup-terraform@v3
 
-      # - name: initialize terraform
-      #   run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
+      - name: initialize terraform
+        run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
 
-      - name: Check, Create & Login to ECR.
-        uses: ./.github/actions/ecr
-        with:
-          ecr : $TF_VAR_ecr_repo
+      - name: Check if there's an ECR already
+        id: ECR
+        continue-on-error: true
+        run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
 
-      # - name: Check if there's an ECR already
-      #   id: ECR
-      #   continue-on-error: true
-      #   run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
+      - name: Create ECR
+        if: ${{steps.ECR.outcome != 'success'}}
+        run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
 
-      # - name: Create ECR
-      #   if: ${{steps.ECR.outcome != 'success'}}
-      #   run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
-
-      # - name: Login to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push docker image to Amazon ECR
         env:
