@@ -1,48 +1,49 @@
 # This is only RDS instance not cluster's
-resource "aws_db_instance" "gen-rds" {
-    # depends_on= [aws_db_parameter_group.postgresql_param_group]
-    identifier = var.name
-    instance_class = var.instance_class
-    storage_type = var.storage_type
-    engine = var.engine
-    skip_final_snapshot = var.skip_final_snapshot
-    apply_immediately = var.apply_immediately
-    publicly_accessible = var.public_access
-    username = var.username
-    password = var.password
-    db_name = var.db_name
-    allocated_storage = var.storage
-    db_subnet_group_name = var.subnet_grp_name
-    tags = {
-        "Name" = var.name
-    }
-    vpc_security_group_ids = var.vpc_sg
-}
+# resource "aws_db_instance" "gen-rds" {
+#     # depends_on= [aws_db_parameter_group.postgresql_param_group]
+#     identifier = var.name
+#     instance_class = var.instance_class
+#     storage_type = var.storage_type
+#     engine = var.engine
+#     skip_final_snapshot = var.skip_final_snapshot
+#     apply_immediately = var.apply_immediately
+#     publicly_accessible = var.public_access
+#     username = var.username
+#     password = var.password
+#     db_name = var.db_name
+#     allocated_storage = var.storage
+#     db_subnet_group_name = var.subnet_grp_name
+#     tags = {
+#         "Name" = var.name
+#     }
+#     vpc_security_group_ids = var.vpc_sg
+# }
 
 
 //turn on logging for cloudwatch logs.
-# resource "aws_rds_cluster" "gen-postgresql" {
-#   depends_on = [ aws_rds_cluster_parameter_group.postgresql_param_group ]
-#   cluster_identifier      = var.name
-#   engine                  = "postgres"
-#   engine_version          = "15.4"
-#   availability_zones      = ["us-west-2a", "us-west-2b", "us-west-2c"]
-#   database_name           = "auth"
-#   master_username         = "Harshvardhansinh"
-#   master_password         = "Harshvardhansinh1234$"
-#   apply_immediately = true
-#   db_cluster_instance_class = "db.m5d.large"
-#   allocated_storage = 20
-#   vpc_security_group_ids = var.vpc_sg
-#   storage_type = "gp3"
-#   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.postgresql_param_group.name
-#   # db_instance_parameter_group_name = 
-#   db_subnet_group_name = var.subnet_grp_name
-#   # engine_mode = "serverless"
-#    tags = {
-#         "Name" = var.name
-#     }
-# }
+resource "aws_rds_cluster" "gen-postgresql" {
+  depends_on = [ aws_rds_cluster_parameter_group.postgresql_param_group ]
+  cluster_identifier      = var.name
+  engine                  = "postgres"
+  engine_version          = "15.4"
+  availability_zones      = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  database_name           = "auth"
+  master_username         = "Harshvardhansinh"
+  master_password         = "Harshvardhansinh1234$"
+  apply_immediately = true
+  db_cluster_instance_class = "db.m5d.large"
+  allocated_storage = 20
+  vpc_security_group_ids = var.vpc_sg
+  storage_type = "gp3"
+  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.postgresql_param_group.name
+  # db_cluster_parameter_group_name = aws_rds_cluster_parameter_group
+  # db_instance_parameter_group_name = 
+  db_subnet_group_name = var.subnet_grp_name
+  # engine_mode = "serverless"
+   tags = {
+        "Name" = var.name
+    }
+}
 
 //use db_cluster_parameter_group
 //use Updated parameter pgaudit.role to rds_pgaudit with apply method immediate
@@ -51,8 +52,13 @@ resource "aws_db_instance" "gen-rds" {
 #   family = "postgres15"
 
 #   parameter {
-#     name  = "pgaudit.log"
-#     value = "all"
+#     name  = "log_min_duration_statement"
+#     value = 0
+#     apply_method = "immediate"
+#   }
+#   parameter {
+#     name  = "log_min_duration_sample"
+#     value = 0
 #     apply_method = "immediate"
 #   }
 # }
@@ -60,21 +66,22 @@ resource "aws_db_instance" "gen-rds" {
 
 //add shared_preloaded_library with pgaudit.
 //log_statemnet all, role rds_pgaudit
-# resource "aws_rds_cluster_parameter_group" "postgresql_param_group" {
-#   name   = "rds"
-#   family = "postgres15"
+resource "aws_rds_cluster_parameter_group" "postgresql_param_group" {
+  name   = "rds"
+  family = "postgres15"
 
-#   parameter {
-#     name  = "pgaudit.log"
-#     value = "all"
-#     apply_method = "immediate"
-#   }
-#   parameter {
-#     name  = "pgaudit.role"
-#     value = "rds_pgaudit"
-#     apply_method = "immediate"
-#   }
-# }
+   parameter {
+    name  = "log_min_duration_statement"
+    value = 0
+    apply_method = "immediate"
+  }
+  parameter {
+    name  = "log_min_duration_sample"
+    value = 0
+    apply_method = "immediate"
+  }
+
+}
 
 
 
