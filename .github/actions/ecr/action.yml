@@ -27,6 +27,7 @@ runs:
         uses: aws-actions/amazon-ecr-login@v2
       
       - name: Build, tag, and push docker image to Amazon ECR
+        shell: bash
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ inputs.ecr }}
