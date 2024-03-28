@@ -23,6 +23,8 @@ runs:
         if: ${{steps.ECR.outcome != 'success'}}
         run: aws ecr create-repository --repository-name ${{ inputs.ecr }} --region us-west-2
 
-      - uses: aws-actions/amazon-ecr-login@v2
+      - id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        
 
   
