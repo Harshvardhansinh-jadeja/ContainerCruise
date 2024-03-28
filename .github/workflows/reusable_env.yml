@@ -105,18 +105,24 @@ jobs:
       - name: initialize terraform
         run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
 
-      - name: Check if there's an ECR already
-        id: ECR
-        continue-on-error: true
-        run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
-
-      - name: Create ECR
-        if: ${{steps.ECR.outcome != 'success'}}
-        run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
-
-      - name: Login to Amazon ECR
+      - name: Check, Create & Login to ECR.
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: ./.github/actions/ecr
+        with:
+          ecr : $TF_VAR_ecr_repo
+
+      # - name: Check if there's an ECR already
+      #   id: ECR
+      #   continue-on-error: true
+      #   run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
+
+      # - name: Create ECR
+      #   if: ${{steps.ECR.outcome != 'success'}}
+      #   run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
+
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push docker image to Amazon ECR
         env:

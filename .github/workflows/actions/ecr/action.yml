@@ -1,0 +1,34 @@
+name: "Create ECR REPO"
+
+description: "Create ECR if not exists & Login to it."
+
+inputs:
+   ecr:
+      required: true
+      description: Name of the ECR
+outputs:
+  registry:
+    description: "ECR registry"
+    value: ${{ steps.login-ecr.outputs.registry }}
+
+runs:
+
+  using: "composite"
+  steps:
+
+      - name: Check if there's an ECR already
+        shell: bash
+        id: ECR
+        continue-on-error: true
+        run: aws ecr describe-repositories --repository-names ${{ inputs.ecr }}
+
+      - name: Create ECR
+        shell: bash
+        if: ${{steps.ECR.outcome != 'success'}}
+        run: aws ecr create-repository --repository-name ${{ inputs.ecr }} --region us-west-2
+
+      - id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      
+
+  
