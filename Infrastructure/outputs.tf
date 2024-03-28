@@ -3,7 +3,7 @@ output "alb_DNS" {
 }
 
 output "bastion_public_IP" {
-    value = module.bastion_host.public_ip
+  value = module.bastion_host.public_ip
 }
 
 output "endpoint" {

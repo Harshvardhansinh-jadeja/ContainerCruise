@@ -42,13 +42,13 @@ variable "security_groups" {
 
 variable "aws_log" {
   type = object({
-      logDriver :optional(string),
-      options :  object({
-          awslogs-group: string ,
-          awslogs-region: string ,
-          awslogs-create-group: string ,
-          awslogs-stream-prefix: string
-      })            
+    logDriver : optional(string),
+    options : object({
+      awslogs-group : string,
+      awslogs-region : string,
+      awslogs-create-group : string,
+      awslogs-stream-prefix : string
+    })
   })
   default = null
 }

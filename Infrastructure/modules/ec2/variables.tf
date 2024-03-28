@@ -1,10 +1,10 @@
 variable "subnet_id" {
-    type = string
+  type = string
 }
 variable "name" {
-    type = string
+  type = string
 }
 variable "sg_ids" {
-    type = list(string)
+  type = list(string)
 }
 

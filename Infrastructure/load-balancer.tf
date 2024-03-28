@@ -19,14 +19,14 @@
 # }
 
 module "harshvardhan-alb" {
-  source = "./modules/load-balancer"
-  name = "${var.environment}-alb-service"
-  internal= false
-  lb_type = "application"
-  subnets = [aws_subnet.harshvardhan-public-subnets[0].id ,aws_subnet.harshvardhan-public-subnets[1].id]
-  security_groups    = [module.harshvardhan-alb-sg.sg_id] 
+  source          = "./modules/load-balancer"
+  name            = "${var.environment}-alb-service"
+  internal        = false
+  lb_type         = "application"
+  subnets         = [aws_subnet.harshvardhan-public-subnets[0].id, aws_subnet.harshvardhan-public-subnets[1].id]
+  security_groups = [module.harshvardhan-alb-sg.sg_id]
 
   balancer_port = "80"
-  protocol = "HTTP"
-  tg_arn = module.harshvardhan-tg.tg_arn
+  protocol      = "HTTP"
+  tg_arn        = module.harshvardhan-tg.tg_arn
 }

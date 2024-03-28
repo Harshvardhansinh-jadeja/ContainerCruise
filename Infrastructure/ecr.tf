@@ -24,7 +24,7 @@
 
 # resource "null_resource" "run_comand_two" {
 #   depends_on = [null_resource.run_comand_one]
-  
+
 #   provisioner "local-exec" {
 #     command = <<-EOT
 #       docker build -t ${var.local-image} ../auth
@@ -33,7 +33,7 @@
 # }
 # resource "null_resource" "run_comand_three" {
 #   depends_on = [ null_resource.run_comand_two]
-  
+
 #   provisioner "local-exec" {
 #     command = <<-EOT
 #        docker tag ${var.local-image}:latest ${module.harshvardhan-repo.repository_url}

@@ -1,42 +1,42 @@
 variable "name" {
-    type = string
+  type = string
 }
 
 variable "comparison" {
-    type = string
+  type = string
 }
 
 variable "evaluation" {
-    type = number
+  type = number
 }
 
 variable "period" {
-    type = number
+  type = number
 }
 
 variable "threshold" {
-    type = number
+  type = number
 }
 
 variable "metric" {
-    type = string
+  type = string
 }
 
 variable "namespace" {
-    type = string
+  type = string
 }
 
 variable "statistic" {
-    type = string
+  type = string
 }
 
 variable "description" {
-    type = string
+  type = string
 }
 
 variable "alarm_action" {
-    type = list(string)
+  type = list(string)
 }
-variable "dimensions"{
-    default = null
+variable "dimensions" {
+  default = null
 }

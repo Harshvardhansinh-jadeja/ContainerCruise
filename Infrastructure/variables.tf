@@ -1,6 +1,6 @@
 variable "profile" {
-  type = string
-  default = "harsh" 
+  type    = string
+  default = "harsh"
 }
 variable "region" {
   type = string
@@ -13,9 +13,9 @@ variable "ecr_repo" {
 }
 
 variable "container-port" {
-  type = number
+  type    = number
   default = 3000
-  
+
 }
 
 variable "anywhere" {
@@ -27,7 +27,7 @@ variable "account_id" {
   sensitive = true
 }
 variable "local-image" {
-  type = string
+  type    = string
   default = "containercruise"
   # default = "authcontainer"
 }
@@ -45,27 +45,27 @@ variable "username" {
 }
 
 variable "password" {
-  type = string
+  type      = string
   sensitive = true
 }
 
 variable "db_port" {
-  type = number
+  type    = number
   default = 5432
 }
 
 variable "private_subnets" {
-  type = list(string)
-  default = [ "10.0.0.0/24", "10.0.1.0/24", "10.0.4.0/24" ]
+  type    = list(string)
+  default = ["10.0.0.0/24", "10.0.1.0/24", "10.0.4.0/24"]
 }
 
 variable "az" {
-  type = list(string)
-  default = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
+  type    = list(string)
+  default = ["us-west-2a", "us-west-2b", "us-west-2c"]
 }
 variable "public_subnets" {
-  type = list(string)
-  default = [ "10.0.2.0/24", "10.0.3.0/24", "10.0.5.0/24" ]
+  type    = list(string)
+  default = ["10.0.2.0/24", "10.0.3.0/24", "10.0.5.0/24"]
 }
 variable "environment" {
   type = string

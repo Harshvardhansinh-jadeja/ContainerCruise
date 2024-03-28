@@ -15,19 +15,25 @@ data "aws_ssm_parameter" "username" {
   name = "/harshvardhan/sandbox/rds/username"
 }
 
+# Fetch the SSM parameter here and give arn of this into secrets of ECS.
+# data "aws_ssm_parameter" "auth_secret" {
+#   name = "/harshvardhan/sandbox/rds/auth_secret"
+# }
+
+
 data "aws_ssm_parameter" "password" {
   name = "/harshvardhan/sandbox/rds/password"
 }
 
 resource "aws_ssm_parameter" "endpoint" {
-  name = "/harshvardhan/sandbox/rds/database_endpoint"
-  type = "SecureString"
+  name  = "/harshvardhan/sandbox/rds/database_endpoint"
+  type  = "SecureString"
   value = module.harshvardhan-rds.endpoint
 }
 
 resource "aws_ssm_parameter" "url" {
   name = "/harshvardhan/sandbox/rds/DATABASE_URL"
   type = "SecureString"
-#   value = "postgresql://${aws_ssm_parameter.username.value}:${aws_ssm_parameter.password.value}@${aws_ssm_parameter.endpoint.value}/auth"
+  #   value = "postgresql://${aws_ssm_parameter.username.value}:${aws_ssm_parameter.password.value}@${aws_ssm_parameter.endpoint.value}/auth"
   value = "postgresql://${data.aws_ssm_parameter.username.value}:${data.aws_ssm_parameter.password.value}@${aws_ssm_parameter.endpoint.value}/auth"
 }

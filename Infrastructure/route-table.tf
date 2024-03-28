@@ -8,14 +8,14 @@ resource "aws_route_table" "harshvardhan-public-rt" {
   tags = {
     Name = "${var.environment}-public-rt"
   }
-  
+
 }
 
 resource "aws_route_table" "harshvardhan-private-rt" {
-  vpc_id =module.harshvardhan-vpc.vpc_id
+  vpc_id = module.harshvardhan-vpc.vpc_id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = module.harshvardhan-ngw.nat_id
   }
   tags = {
