@@ -3,6 +3,7 @@ resource "aws_instance" "gen_ec2" {
   ami = "ami-052c9ea013e6e3567"
   instance_type = "t2.micro"
 #   taken directly from the console
+  disable_api_termination = false
   key_name = "harsh-key"
    tags = {
     name = var.name

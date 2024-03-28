@@ -28,6 +28,7 @@ resource "aws_rds_cluster" "gen-postgresql" {
   engine_version          = "15.4"
   availability_zones      = ["us-west-2a", "us-west-2b", "us-west-2c"]
   database_name           = "auth"
+  skip_final_snapshot = true
   master_username         = "Harshvardhansinh"
   master_password         = "Harshvardhansinh1234$"
   apply_immediately = true
