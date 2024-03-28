@@ -15,7 +15,10 @@ runs:
 
   using: "composite"
   steps:
-
+      - name: Checkout
+        shell: bash
+        uses: actions/checkout@v4
+        
       - name: Check if there's an ECR already
         shell: bash
         id: ECR
