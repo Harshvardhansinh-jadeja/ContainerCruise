@@ -37,7 +37,6 @@ resource "aws_rds_cluster" "gen-postgresql" {
   vpc_security_group_ids = var.vpc_sg
   enabled_cloudwatch_logs_exports = [ "postgresql" ]
   storage_type = "gp3"
-  iops = 3000
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.postgresql_param_group.name
   # db_cluster_parameter_group_name = aws_rds_cluster_parameter_group
   # db_instance_parameter_group_name = 
