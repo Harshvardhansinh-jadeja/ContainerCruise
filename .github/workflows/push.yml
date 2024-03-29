@@ -18,6 +18,7 @@ jobs:
       RDS_USERNAME: ${{secrets.RDS_USERNAME}}
       RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
       AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+      OIDC_ROLE : ${{secrets.OIDC_ROLE}}
 
   # Build:
   #   defaults:

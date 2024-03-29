@@ -20,6 +20,8 @@ on:
         required: true
       AWS_ACCOUNT_ID:
         required: true
+      OIDC_ROLE:
+         required: true
 
 permissions:
   id-token: write
@@ -93,7 +95,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/OIDC_Connect
+          role-to-assume: ${{secrets.OIDC_ROLE}}
           aws-region: us-west-2
 
       - name: Get Identity
