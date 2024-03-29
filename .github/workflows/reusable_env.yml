@@ -61,11 +61,42 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build image
-        run: docker build -t ${{env.ECR_REPO}}-repo .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Build and export
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          tags: myimage:latest
+          outputs: type=docker,dest=/tmp/myimage.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: myimage
+          path: /tmp/myimage.tar
+
+  Builda:
+    if: ${{ always() && ( needs.path.result == 'skipped' || needs.path.outputs.frontend == 'true' ) }}
+    needs: path
+    environment: ${{inputs.environment}}
+
+    defaults:
+      run:
+        working-directory: ./auth
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # - name: Build image
+      #   run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
     needs: [Build, path]
@@ -92,26 +123,39 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v3
         with:
-          role-to-assume: ${{secrets.OIDC_ROLE}}
-          aws-region: us-west-2
+          name: myimage
+          path: /tmp
+          
+      - name: Load image
+        run: |
+          docker load --input /tmp/myimage.tar
+          docker image ls -a      
 
-      - name: Get Identity
-        run: aws sts get-caller-identity
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: ${{secrets.OIDC_ROLE}}
+      #     aws-region: us-west-2
 
-      - name: install Terraform
-        uses: hashicorp/setup-terraform@v3
+      # - name: Get Identity
+      #   run: aws sts get-caller-identity
 
-      - name: initialize terraform
-        run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
+      # - name: install Terraform
+      #   uses: hashicorp/setup-terraform@v3
 
-      - name: Check, Create & Login to ECR.
-        id: login-ecr
-        uses: ./.github/actions/ecr
-        with:
-          ecr : $TF_VAR_ecr_repo
+      # - name: initialize terraform
+      #   run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
+
+      # - name: Check, Create & Login to ECR.
+      #   id: login-ecr
+      #   uses: ./.github/actions/ecr
+      #   with:
+      #     ecr : $TF_VAR_ecr_repo
+
+
 
       # - name: Check if there's an ECR already
       #   id: ECR
@@ -126,21 +170,23 @@ jobs:
       #   id: login-ecr
       #   uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{env.ECR_REPO}}
-          IMAGE_TAG: ${{github.sha}}
-        run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: Select workspace
-        run: terraform workspace select ${{inputs.workspace}}
 
-      - name: plan terraform
-        run: terraform plan
+      # - name: Build, tag, and push docker image to Amazon ECR
+      #   env:
+      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     REPOSITORY: ${{env.ECR_REPO}}
+      #     IMAGE_TAG: ${{github.sha}}
+      #   run: |
+      #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
+      #     docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: Apply terraform
-        if: ${{github.event_name == 'push'}}
-        run: terraform apply -auto-approve
+      # - name: Select workspace
+      #   run: terraform workspace select ${{inputs.workspace}}
+
+      # - name: plan terraform
+      #   run: terraform plan
+
+      # - name: Apply terraform
+      #   if: ${{github.event_name == 'push'}}
+      #   run: terraform apply -auto-approve
