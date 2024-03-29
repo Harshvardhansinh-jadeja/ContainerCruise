@@ -182,7 +182,7 @@ jobs:
           IMAGE_TAG: ${{github.sha}}
         run: |
           # docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
-          docker tag myimage:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker tag containercruise:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: Select workspace
