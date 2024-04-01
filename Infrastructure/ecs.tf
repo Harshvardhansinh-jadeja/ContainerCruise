@@ -17,7 +17,7 @@ module "harshvardhan-cluster" {
   #   "AUTH_SECRET" = "E5rLUtvhWmt00MoXqnX9kgS9Ak8gc7Z88keYaW8mhbU="
   # }
   environment = {
-    "DATABASE_URL" = "/harshvardhan/sandbox/rds/url"
+    "DATABASE_URL" = "/harshvardhan/sandbox/rds/DATABASE_URL"
     "AUTH_SECRET"  = "/harshvardhan/sandbox/rds/auth_secret"
     # "AUTH_SECRET"  = data.aws_ssm_parameter.auth_secret.arn
   }
