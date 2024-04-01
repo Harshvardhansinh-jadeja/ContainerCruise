@@ -32,8 +32,6 @@ COPY --from=build /app /
 
 EXPOSE 3000
 
-ENV AUTH_SECRET=E5rLUtvhWmt00MoXqnX9kgS9Ak8gc7Z88keYaW8mhbU=
-
 RUN apk add --no-cache bash
 
 # CMD ["npm","start"]
