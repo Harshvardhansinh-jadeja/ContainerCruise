@@ -23,7 +23,7 @@ module "harshvardhan-alb" {
   name            = "${var.environment}-alb-service"
   internal        = false
   lb_type         = "application"
-  subnets         = [aws_subnet.harshvardhan-public-subnets[0].id, aws_subnet.harshvardhan-public-subnets[1].id]
+  subnets         = [module.harshvardhan-pub-sub-1.id, module.harshvardhan-pub-sub-2.id]
   security_groups = [module.harshvardhan-alb-sg.sg_id]
 
   balancer_port = "80"

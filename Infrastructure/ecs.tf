@@ -27,7 +27,7 @@ module "harshvardhan-cluster" {
   service_name   = "harshvardhan-service"
   desired_count  = 1
   tg_arn         = module.harshvardhan-tg.tg_arn
-  subnets        = [aws_subnet.harshvardhan-private-subnets[0].id, aws_subnet.harshvardhan-private-subnets[1].id]
+  subnets        = [module.harshvardhan-private-sub-1.id, module.harshvardhan-private-sub-2.id]
   aws_log = {
     logDriver : "awslogs",
     options : {

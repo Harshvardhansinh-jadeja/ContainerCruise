@@ -1,23 +1,75 @@
-resource "aws_subnet" "harshvardhan-private-subnets" {
-  count             = 3
-  vpc_id            = module.harshvardhan-vpc.vpc_id
-  cidr_block        = var.private_subnets[count.index]
-  availability_zone = var.az[count.index]
-  tags = {
-    Name = "${var.environment}-private-subnet-${count.index}",
-  }
+module "harshvardhan-pub-sub-1" {
+  source = "./modules/subnets"
+  vpc_id = module.harshvardhan-vpc.vpc_id
+  az = "us-west-2a"
+  name = "${var.environment}-public-subnet-1"
+  cidr = "10.0.2.0/24"
+  map_ip = true
 }
 
-resource "aws_subnet" "harshvardhan-public-subnets" {
-  count             = 3
-  vpc_id            = module.harshvardhan-vpc.vpc_id
-  cidr_block        = var.public_subnets[count.index]
-  availability_zone = var.az[count.index]
-  tags = {
-    Name = "${var.environment}-public-subnet-${count.index}",
-  }
-  map_public_ip_on_launch = true
+module "harshvardhan-pub-sub-2" {
+  source = "./modules/subnets"
+  vpc_id = module.harshvardhan-vpc.vpc_id
+  az = "us-west-2b"
+  name = "${var.environment}-public-subnet-2"
+  cidr = "10.0.3.0/24"
+  map_ip = true
 }
+module "harshvardhan-pub-sub-3" {
+  source = "./modules/subnets"
+  vpc_id = module.harshvardhan-vpc.vpc_id
+  az = "us-west-2c"
+  name = "${var.environment}-public-subnet-3"
+  cidr = "10.0.5.0/24"
+  map_ip = true
+}
+
+
+module "harshvardhan-private-sub-1" {
+  source = "./modules/subnets"
+  vpc_id = module.harshvardhan-vpc.vpc_id
+  az = "us-west-2a"
+  name = "${var.environment}-private-subnet-1"
+  cidr = "10.0.0.0/24"
+}
+
+module "harshvardhan-private-sub-2" {
+  source = "./modules/subnets"
+  vpc_id = module.harshvardhan-vpc.vpc_id
+  az = "us-west-2b"
+  name = "${var.environment}-private-subnet-2"
+  cidr = "10.0.1.0/24"
+}
+module "harshvardhan-private-sub-3" {
+  source = "./modules/subnets"
+  vpc_id = module.harshvardhan-vpc.vpc_id
+  az = "us-west-2c"
+  name = "${var.environment}-private-subnet-3"
+  cidr = "10.0.4.0/24"
+}
+
+
+# resource "aws_subnet" "harshvardhan-public-subnets" {
+#   count             = 3
+#   vpc_id            = module.harshvardhan-vpc.vpc_id
+#   cidr_block        = var.public_subnets[count.index]
+#   availability_zone = var.az[count.index]
+#   tags = {
+#     Name = "${var.environment}-public-subnet-${count.index}",
+#   }
+#   map_public_ip_on_launch = true
+# }
+
+# resource "aws_subnet" "harshvardhan-private-subnets" {
+#   count             = 3
+#   vpc_id            = module.harshvardhan-vpc.vpc_id
+#   cidr_block        = var.private_subnets[count.index]
+#   availability_zone = var.az[count.index]
+#   tags = {
+#     Name = "${var.environment}-private-subnet-${count.index}",
+#   }
+# }
+
 # resource "aws_subnet" "harshvardhan-private-subnet" {
 #   vpc_id =module.harshvardhan-vpc.vpc_id
 #   cidr_block = "10.0.0.0/24"

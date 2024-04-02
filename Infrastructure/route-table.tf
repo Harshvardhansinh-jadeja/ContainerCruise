@@ -26,19 +26,21 @@ resource "aws_route_table" "harshvardhan-private-rt" {
 
 
 resource "aws_route_table_association" "subnet-assoc-private" {
-  subnet_id      = aws_subnet.harshvardhan-private-subnets[0].id
+  # subnet_id      = aws_subnet.harshvardhan-private-subnets[0].id
+  subnet_id      = module.harshvardhan-private-sub-1.id
   route_table_id = aws_route_table.harshvardhan-private-rt.id
 }
 resource "aws_route_table_association" "subnet-assoc-private-2" {
-  subnet_id      = aws_subnet.harshvardhan-private-subnets[1].id
+  # subnet_id      = aws_subnet.harshvardhan-private-subnets[1].id
+  subnet_id      = module.harshvardhan-private-sub-2.id
   route_table_id = aws_route_table.harshvardhan-private-rt.id
 }
 
 resource "aws_route_table_association" "subnet-assoc-public" {
-  subnet_id      = aws_subnet.harshvardhan-public-subnets[0].id
+  subnet_id      = module.harshvardhan-pub-sub-1.id
   route_table_id = aws_route_table.harshvardhan-public-rt.id
 }
 resource "aws_route_table_association" "subnet-assoc-public-2" {
-  subnet_id      = aws_subnet.harshvardhan-public-subnets[1].id
+  subnet_id      = module.harshvardhan-pub-sub-2.id
   route_table_id = aws_route_table.harshvardhan-public-rt.id
 }
