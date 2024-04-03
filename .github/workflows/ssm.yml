@@ -37,11 +37,7 @@ jobs:
               aws-region: us-west-2
 
           - name: Set Env variables
-            # run:  bash ../.github/workflows/ssm.sh
-            run: |
-                SSM_USER=$(aws --region=us-west-2 ssm get-parameter --name "/harshvardhan/sandbox/rds/username" --with-decryption --output text --query Parameter.Value)
-                 echo "ECHO  ${SSM_USER}"
-                 echo "TF_VAR_username= ${SSM_USER}" >> $GITHUB_ENV
+            run:  bash ../.github/workflows/ssm.sh
         
           - name: Print ENV of user
             run: echo "User is TF_VAR_username ${TF_VAR_username}"
