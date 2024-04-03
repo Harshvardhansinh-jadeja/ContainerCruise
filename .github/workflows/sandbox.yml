@@ -2,12 +2,12 @@ name: Sandbox Deploy
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - sandbox
-  pull_request:
-    branches:
-      - sandbox
+  # push:
+  #   branches:
+  #     - sandbox
+  # pull_request:
+  #   branches:
+  #     - sandbox
 
 jobs:
   Sandbox:

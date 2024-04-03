@@ -1,0 +1,41 @@
+name: FETCH SSM Parameter
+
+on: 
+    push: 
+        branches: 
+            - dev
+
+jobs:
+    Deploy:
+        defaults:
+          run:
+            working-directory: ./Infrastructure
+        runs-on: ubuntu-latest
+        environment: sandbox
+    
+        env:
+          # ECR_REPO: "harshvardhan-repo"
+          TF_VAR_ecr_repo: "harshvardhan-repo"
+          TF_VAR_profile: "harsh"
+          TF_VAR_region: "us-west-2"
+          TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
+        #   TF_VAR_username: ${{secrets.RDS_USERNAME}}
+          TF_VAR_password: ${{secrets.RDS_PASSWORD}}
+    
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Configure AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              role-to-assume: ${{secrets.OIDC_ROLE}}
+              aws-region: us-west-2
+
+          - name: Set Env variables
+            run:  bash ../.github/workflows/ssm.sh
+        
+          - name: Print ENV of user
+            run: echo ${TF_VAR_username}
+
+        
