@@ -1,9 +1,10 @@
 name: FETCH SSM Parameter
 
 on: 
-    push: 
-        branches: 
-            - sandbox
+   workflow_dispatch: 
+    # push: 
+    #     branches: 
+    #         - sandbox
 
 permissions:
     id-token: write
