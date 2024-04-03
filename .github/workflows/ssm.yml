@@ -3,7 +3,7 @@ name: FETCH SSM Parameter
 on: 
     push: 
         branches: 
-            - dev
+            - sandbox
 
 jobs:
     Deploy:
