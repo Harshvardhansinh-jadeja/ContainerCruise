@@ -1,5 +1,6 @@
 name: Dev Deploy
 
+# Event trigger
 on:
   workflow_dispatch:
   push:
@@ -11,11 +12,13 @@ on:
 
 jobs:
   Dev:
+    # permission for OIDC_ROLE and pull dorny path filters.
     permissions:
       id-token: write
       contents: read
       pull-requests: read
 
+      # Reusable workflow.
     uses: ./.github/workflows/reusable_env.yml
     with:
       environment: "dev"
@@ -27,6 +30,9 @@ jobs:
       RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}
       AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
       OIDC_ROLE: ${{secrets.OIDC_ROLE}}
+
+
+      
 # env:
 #   RDS_USERNAME: ${{secrets.RDS_USERNAME}}
 #   RDS_PASSWORD: ${{secrets.RDS_PASSWORD}}

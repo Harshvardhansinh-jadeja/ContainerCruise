@@ -9,6 +9,7 @@ on:
   #     - main
 
 jobs:
+  # Check on which folder changes have been made.
   path:
     runs-on: ubuntu-latest
     permissions:

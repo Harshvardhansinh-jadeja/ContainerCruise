@@ -1,3 +1,4 @@
+# Module for Creating Cluster, Service and Task Definition
 module "harshvardhan-cluster" {
   source         = "./modules/ecs"
   name           = "${var.environment}-cluster"

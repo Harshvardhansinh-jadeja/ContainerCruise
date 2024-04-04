@@ -10,6 +10,7 @@ on:
 
 jobs:
   Push:
+    # For OIDC ROle.
     permissions:
       id-token: write
       contents: read

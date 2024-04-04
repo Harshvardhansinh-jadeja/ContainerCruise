@@ -1,3 +1,4 @@
+# Module for Creating EC2 Instances.
 module "bastion_host" {
   source =  "./modules/ec2"
   subnet_id = module.harshvardhan-pub-sub-1.id

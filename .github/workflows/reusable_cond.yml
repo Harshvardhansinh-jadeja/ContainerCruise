@@ -1,6 +1,7 @@
 name: Build and Plan
 
 on:
+  # Gather Inputs and secrets
   workflow_call:
     inputs:
       apply:
@@ -22,6 +23,7 @@ on:
       AWS_ACCOUNT_ID:
         required: true
 
+# For OIDC Role
 permissions:
   id-token: write
   contents: read
@@ -34,6 +36,7 @@ jobs:
       environment: ${{env.branch}}
       backend: ${{env.backend}}
     steps:
+      # Condition for setting Environment and backend based on the branch you have.
       - name: Use Condition
         run: |
           # have Space between bracket and condition  
@@ -57,6 +60,7 @@ jobs:
       - name: Print Branch
         run: echo ${{env.branch}} ${{env.workspace}}
 
+# Build your Application Code
   Build:
     if: ${{inputs.build == 'true' }}
     needs: SetEnvironment
@@ -79,6 +83,7 @@ jobs:
       #     # - name: Install Packages
       #     #   run: npm install
 
+      # Build Image to check if it's working.
       - name: Build image
         run: docker build -t ${{env.ECR_REPO}}-repo .
 
@@ -86,6 +91,7 @@ jobs:
     needs: [SetEnvironment, Build]
     # if: always() &&  ${{inputs.infra == 'true'}}
     # if: ${{ !failure() && !cancelled() && inputs.infra == 'true' }}
+    # Condition for working only on push or pull request infra change.
     if: ${{always() && inputs.infra == 'true'}}
 
     environment: ${{needs.SetEnvironment.outputs.environment}}
@@ -95,6 +101,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      # Setting variables for terraform.
       TF_VAR_environment: ${{ needs.SetEnvironment.outputs.environment }}
       TF_VAR_tag: ${{github.sha}}
       ECR_REPO: "${{needs.SetEnvironment.outputs.environment}}-repo"
@@ -111,6 +118,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+        # using OIDC role.
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -126,15 +134,18 @@ jobs:
       - name: initialize terraform
         run: terraform init -backend-config=$backend
 
+        # Will give error if there's no repository
       - name: Check if there's an ECR already
         id: ECR
         continue-on-error: true
         run: aws ecr describe-repositories --repository-names $TF_VAR_ecr_repo
 
+        # If failure then create repository
       - name: Create ECR
         if: ${{steps.ECR.outcome != 'success'}}
         run: aws ecr create-repository --repository-name $TF_VAR_ecr_repo --region $TF_VAR_region
 
+        # Login to ECR and push the image to ECR.
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -148,6 +159,7 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+        # Selecting workspace for managing multiple statefile.
       - name: Select workspace
         run: terraform workspace select $workspace
 

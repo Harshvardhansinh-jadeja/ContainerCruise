@@ -1,3 +1,4 @@
+# Target Group Module for forwarding from ECS to ALB.
 module "harshvardhan-tg" {
   source         = "./modules/target-group"
   name           = "${var.environment}-tg"

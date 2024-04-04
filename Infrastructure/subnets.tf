@@ -1,3 +1,4 @@
+# Module for Subnets.
 module "harshvardhan-pub-sub-1" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
@@ -7,6 +8,7 @@ module "harshvardhan-pub-sub-1" {
   map_ip = true
 }
 
+# Public Subnet
 module "harshvardhan-pub-sub-2" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
@@ -15,6 +17,8 @@ module "harshvardhan-pub-sub-2" {
   cidr = "10.0.3.0/24"
   map_ip = true
 }
+
+# Public Subnet
 module "harshvardhan-pub-sub-3" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
@@ -24,7 +28,7 @@ module "harshvardhan-pub-sub-3" {
   map_ip = true
 }
 
-
+# Private Subnet
 module "harshvardhan-private-sub-1" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
@@ -33,6 +37,7 @@ module "harshvardhan-private-sub-1" {
   cidr = "10.0.0.0/24"
 }
 
+# Private Subnet
 module "harshvardhan-private-sub-2" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
@@ -40,6 +45,8 @@ module "harshvardhan-private-sub-2" {
   name = "${var.environment}-private-subnet-2"
   cidr = "10.0.1.0/24"
 }
+
+# Private Subnet
 module "harshvardhan-private-sub-3" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id

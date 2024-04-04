@@ -1,3 +1,4 @@
+# Load Balancer Security group
 module "harshvardhan-alb-sg" {
   source = "./modules/security-group"
   name   = "${var.environment}-alb-sg"
@@ -24,7 +25,7 @@ module "harshvardhan-alb-sg" {
   }]
 }
 
-
+# ECS Security group
 module "harshvardhan-ecs-sg" {
   source = "./modules/security-group"
   name   = "${var.environment}-ecs-sg"
@@ -51,7 +52,7 @@ module "harshvardhan-ecs-sg" {
   }]
 }
 
-
+# Security group for RDS
 module "harshvardhan-RDS-sg" {
   source = "./modules/security-group"
   name   = "${var.environment}-RDS-sg"
@@ -78,6 +79,7 @@ module "harshvardhan-RDS-sg" {
   }]
 }
 
+# Security group for Bastion Host EC2
 module "harshvardhan-bastion-sg" {
   source = "./modules/security-group"
   name   = "${var.environment}-bastion-sg"

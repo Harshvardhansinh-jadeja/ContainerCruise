@@ -1,3 +1,4 @@
+# Module for creating RDS Instance.
 module "harshvardhan-rds" {
   source              = "./modules/rds"
   name                = "${var.environment}-rds"

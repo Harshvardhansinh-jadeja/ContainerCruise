@@ -1,5 +1,6 @@
 name: "Create ECR REPO"
 
+# Creating Composite action for ECR creation and Login.
 description: "Create ECR if not exists & Login to it."
 
 inputs:

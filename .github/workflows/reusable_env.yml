@@ -146,11 +146,9 @@ jobs:
       - name: Get Identity
         run: aws sts get-caller-identity
 
-      - name: Set Env variables
+        # Using SSM parameter to Set the Environment variables.
+      - name: Set variables with SSM parameter
         run:  bash ../.github/workflows/ssm.sh
-    
-      - name: Print ENV of user
-        run: cat terraform.tfvars
 
       - name: install Terraform
         uses: hashicorp/setup-terraform@v3
@@ -158,6 +156,7 @@ jobs:
       - name: initialize terraform
         run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
 
+        # Using Composite action for ECR.
       - name: Check, Create & Login to ECR.
         id: login-ecr
         uses: ./.github/actions/ecr

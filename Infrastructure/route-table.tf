@@ -1,3 +1,4 @@
+#Public Route table for giving access to Internet Gateway 
 resource "aws_route_table" "harshvardhan-public-rt" {
   vpc_id = module.harshvardhan-vpc.vpc_id
 
@@ -11,6 +12,7 @@ resource "aws_route_table" "harshvardhan-public-rt" {
 
 }
 
+# Private Route table for NAT gateway to access private resource
 resource "aws_route_table" "harshvardhan-private-rt" {
   vpc_id = module.harshvardhan-vpc.vpc_id
 
@@ -23,8 +25,7 @@ resource "aws_route_table" "harshvardhan-private-rt" {
   }
 }
 
-
-
+//Route table association for private subnet and public subnets.
 resource "aws_route_table_association" "subnet-assoc-private" {
   # subnet_id      = aws_subnet.harshvardhan-private-subnets[0].id
   subnet_id      = module.harshvardhan-private-sub-1.id

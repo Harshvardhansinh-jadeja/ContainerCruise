@@ -1,4 +1,4 @@
-
+# Terraform Version Specification.
 terraform {
   required_providers {
     aws = {
@@ -9,6 +9,7 @@ terraform {
   required_version = "~> 1.7.0"
 }
 
+# AWS Provider 
 provider "aws" {
   # profile = "harshvardhan"
   region  = var.region
@@ -17,7 +18,7 @@ provider "aws" {
 }
 
 
-
+# Fetching IAM Role for Task execution
 data "aws_iam_role" "task_exec-role" {
   //for personal
   name = "ecsTaskExecutionRole"

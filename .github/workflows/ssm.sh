@@ -10,11 +10,13 @@
 
 #!/bin/bash
 
+
 PARAMS=("username" "password")
 REGION="us-west-2"
 PREFIX="/harshvardhan/sandbox/rds/"
 TFVARS_FILE="terraform.tfvars"
 
+# Getting SSM Parameter and passing it into the tfvars file.
 for param in "${PARAMS[@]}"; do
     value=$(aws --region="$REGION" ssm get-parameter --name "$PREFIX$param" --with-decryption --output text --query Parameter.Value)
     # echo "TF_VAR_$param=${value}" >> $GITHUB_ENV
