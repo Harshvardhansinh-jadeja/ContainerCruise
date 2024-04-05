@@ -16,6 +16,6 @@ plan:
 	terraform plan
 
 apply:
-	ifeq ($(push),true)
-		terraform apply -auto-approve
-	endif
+	if [ ${push} = true ]; then\
+        terraform apply -auto-approve \
+    fi
