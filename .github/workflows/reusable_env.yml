@@ -190,12 +190,15 @@ jobs:
           # docker tag containercruise:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: Select workspace
-        run: terraform workspace select ${{inputs.workspace}}
+      # - name: Select workspace
+      #   run: terraform workspace select ${{inputs.workspace}}
 
-      - name: plan terraform
-        run: terraform plan
+      # - name: plan terraform
+      #   run: terraform plan
 
-      - name: Apply terraform
-        if: ${{github.event_name == 'push'}}
-        run: terraform apply -auto-approve
+      # - name: Apply terraform
+      #   if: ${{github.event_name == 'push'}}
+      #   run: terraform apply -auto-approve
+
+      - name: Deploy 
+        run: make deploy workspace=${{inputs.workspace}} push=${{github.event_name == 'push'}}
