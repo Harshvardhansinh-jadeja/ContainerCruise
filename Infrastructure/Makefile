@@ -17,5 +17,5 @@ plan:
 
 apply:
 	if [ ${push} = true ]; then\
-        terraform apply -auto-approve \
+        terraform apply -auto-approve ; \
     fi
