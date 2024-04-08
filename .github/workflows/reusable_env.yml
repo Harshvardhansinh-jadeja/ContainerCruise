@@ -98,7 +98,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build image
-        run: docker build -t ${{env.ECR_REPO}}-repo .
+        run: make image_build name=${{env.ECR_REPO}} path="."
+        # run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
     needs: [Build, path]
@@ -185,10 +186,9 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{env.ECR_REPO}}
           IMAGE_TAG: ${{github.sha}}
-        run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
-          # docker tag containercruise:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        run: make docker name=$REGISTRY/$REPOSITORY:$IMAGE_TAG path="../auth"          
+          # docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
+          # docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       # - name: Select workspace
       #   run: terraform workspace select ${{inputs.workspace}}
@@ -200,5 +200,9 @@ jobs:
       #   if: ${{github.event_name == 'push'}}
       #   run: terraform apply -auto-approve
 
-      - name: Deploy 
-        run: make deploy workspace=${{inputs.workspace}} push=${{github.event_name == 'push'}}
+      - name: Plan
+        run: make Infra_Plan workspace=${{inputs.workspace}} 
+
+      - name: Apply Terraform
+        if: ${{github.event_name == 'push'}}
+        run: make apply

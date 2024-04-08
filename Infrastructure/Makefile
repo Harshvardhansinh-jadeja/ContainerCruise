@@ -3,7 +3,7 @@
 hello_world:
 	@echo "Hello world"
 
-deploy: workspace  plan apply
+Infra_Plan: workspace format validate plan 
 
 destroy:
 	terraform destroy -auto-approve
@@ -18,6 +18,18 @@ plan:
 	terraform plan
 
 apply:
-	if [ ${push} = true ]; then\
-        terraform apply -auto-approve ; \
-    fi
+	terraform apply -auto-approve
+
+format:
+	terraform fmt -recursive
+
+validate:
+	terraform validate
+
+docker: image_build image_push
+
+image_build:
+	docker build -t ${{name}} ${{path}}
+
+image_push:
+	docker push ${{name}}
