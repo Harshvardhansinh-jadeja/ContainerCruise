@@ -6,7 +6,7 @@ variable "profile" {
 
 # Region to configure for deploying resources.
 variable "region" {
-  type = string
+  type    = string
   default = "us-west-2"
   # sensitive = true
 }

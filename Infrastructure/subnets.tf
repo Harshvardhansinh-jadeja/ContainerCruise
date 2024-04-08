@@ -21,9 +21,9 @@
 module "harshvardhan-pub-sub-1" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
-  az = "us-west-2a"
-  name = "${var.environment}-public-subnet-1"
-  cidr = "10.0.2.0/24"
+  az     = "us-west-2a"
+  name   = "${var.environment}-public-subnet-1"
+  cidr   = "10.0.2.0/24"
   map_ip = true
 }
 
@@ -31,9 +31,9 @@ module "harshvardhan-pub-sub-1" {
 module "harshvardhan-pub-sub-2" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
-  az = "us-west-2b"
-  name = "${var.environment}-public-subnet-2"
-  cidr = "10.0.3.0/24"
+  az     = "us-west-2b"
+  name   = "${var.environment}-public-subnet-2"
+  cidr   = "10.0.3.0/24"
   map_ip = true
 }
 
@@ -41,9 +41,9 @@ module "harshvardhan-pub-sub-2" {
 module "harshvardhan-pub-sub-3" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
-  az = "us-west-2c"
-  name = "${var.environment}-public-subnet-3"
-  cidr = "10.0.5.0/24"
+  az     = "us-west-2c"
+  name   = "${var.environment}-public-subnet-3"
+  cidr   = "10.0.5.0/24"
   map_ip = true
 }
 
@@ -51,27 +51,27 @@ module "harshvardhan-pub-sub-3" {
 module "harshvardhan-private-sub-1" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
-  az = "us-west-2a"
-  name = "${var.environment}-private-subnet-1"
-  cidr = "10.0.0.0/24"
+  az     = "us-west-2a"
+  name   = "${var.environment}-private-subnet-1"
+  cidr   = "10.0.0.0/24"
 }
 
 # Private Subnet
 module "harshvardhan-private-sub-2" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
-  az = "us-west-2b"
-  name = "${var.environment}-private-subnet-2"
-  cidr = "10.0.1.0/24"
+  az     = "us-west-2b"
+  name   = "${var.environment}-private-subnet-2"
+  cidr   = "10.0.1.0/24"
 }
 
 # Private Subnet
 module "harshvardhan-private-sub-3" {
   source = "./modules/subnets"
   vpc_id = module.harshvardhan-vpc.vpc_id
-  az = "us-west-2c"
-  name = "${var.environment}-private-subnet-3"
-  cidr = "10.0.4.0/24"
+  az     = "us-west-2c"
+  name   = "${var.environment}-private-subnet-3"
+  cidr   = "10.0.4.0/24"
 }
 
 
