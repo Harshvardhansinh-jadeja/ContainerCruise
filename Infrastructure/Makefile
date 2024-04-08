@@ -29,7 +29,7 @@ validate:
 docker: image_build image_push
 
 image_build:
-	docker build -t ${{name}} ${{path}}
+	docker build -t ${name} ${path}
 
 image_push:
-	docker push ${{name}}
+	docker push ${name}
