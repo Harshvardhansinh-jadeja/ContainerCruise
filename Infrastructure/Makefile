@@ -5,6 +5,8 @@ hello_world:
 
 deploy: workspace  plan apply
 
+destroy:
+	terraform destroy -auto-approve
 
 init:
 	terraform init

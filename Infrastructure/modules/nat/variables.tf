@@ -4,8 +4,8 @@ variable "name" {
 variable "depends" {
 }
 variable "subnet" {
-    type=string
-  }
+  type = string
+}
 variable "eip" {
-    type = string
-  }
+  type = string
+}

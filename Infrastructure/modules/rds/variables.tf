@@ -40,5 +40,5 @@ variable "subnet_grp_name" {
 
 variable "vpc_sg" {
   type = list(string)
-  
+
 }

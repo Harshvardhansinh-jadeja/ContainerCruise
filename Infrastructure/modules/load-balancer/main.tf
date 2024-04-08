@@ -3,7 +3,7 @@ resource "aws_lb" "gen-alb-service" {
   internal           = var.internal
   load_balancer_type = var.lb_type
   subnets            = var.subnets
-  security_groups    = var.security_groups 
+  security_groups    = var.security_groups
 }
 
 resource "aws_lb_listener" "alb-listener" {

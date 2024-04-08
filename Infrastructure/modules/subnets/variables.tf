@@ -15,6 +15,6 @@ variable "name" {
 }
 
 variable "map_ip" {
-  type = bool
+  type    = bool
   default = false
 }

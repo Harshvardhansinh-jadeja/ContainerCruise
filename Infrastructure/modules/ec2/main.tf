@@ -6,16 +6,16 @@ data "aws_ami_ids" "ubuntu" {
     name   = "name"
     values = ["al2023-ami-2023.3.20240219.0-kernel-6.1-x86_64"]
   }
-  
+
 }
 resource "aws_instance" "gen_ec2" {
-  subnet_id = var.subnet_id
-  ami = data.aws_ami_ids.ubuntu.ids[0]
-  instance_type = var.instance_size
+  subnet_id               = var.subnet_id
+  ami                     = data.aws_ami_ids.ubuntu.ids[0]
+  instance_type           = var.instance_size
   disable_api_termination = false
-#   taken directly from the console
+  #   taken directly from the console
   key_name = "harsh-key"
-   tags = {
+  tags = {
     name = var.name
   }
   vpc_security_group_ids = var.sg_ids
