@@ -38,5 +38,5 @@ image_build:
 image_push:
 	docker push ${name}
 
-# envs:
-# 	echo "myenvs=${envs}" >> GITHUB_ENV
+envs:
+	echo "myenvs=${envs}" >> GITHUB_ENV
