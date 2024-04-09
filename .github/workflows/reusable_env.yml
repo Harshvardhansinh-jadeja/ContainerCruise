@@ -12,6 +12,9 @@ on:
       backend:
         required: true
         type: string
+      envs:
+        required: true
+        type: string
 
     secrets:
       RDS_USERNAME:
@@ -121,6 +124,7 @@ jobs:
       # TF_VAR_password: ${{secrets.RDS_PASSWORD}}
       workspace: ${{inputs.workspace}}
       backend: ${{inputs.backend}} 
+      envs: ${{inputs.envs}}
 
     steps:
       - name: Checkout
@@ -129,7 +133,7 @@ jobs:
       - name: Echo env
         run: |
           make envs
-          echo "Makefile Environment is $envs OR $myenvs"
+          echo "Makefile Environment is ${{inputs.envs}} OR ${{env.envs}}"
 
         # For docker image
       # - name: Download artifact
@@ -152,7 +156,7 @@ jobs:
       # - name: Get Identity
       #   run: aws sts get-caller-identity
 
-      #   # Using SSM parameter to Set the Environment variables.
+        # Using SSM parameter to Set the Environment variables.
       # - name: Set variables with SSM parameter
       #   run:  bash ../.github/workflows/ssm.sh
 
@@ -162,7 +166,7 @@ jobs:
       # - name: initialize terraform
       #   run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
 
-      #   # Using Composite action for ECR.
+        # Using Composite action for ECR.
       # - name: Check, Create & Login to ECR.
       #   id: login-ecr
       #   uses: ./.github/actions/ecr
@@ -192,8 +196,8 @@ jobs:
       #     REPOSITORY: ${{env.ECR_REPO}}
       #     IMAGE_TAG: ${{github.sha}}
       #   run: make docker name=$REGISTRY/$REPOSITORY:$IMAGE_TAG path="../auth"          
-          # docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
-          # docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
+      #     docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       # - name: Select workspace
       #   run: terraform workspace select ${{inputs.workspace}}
