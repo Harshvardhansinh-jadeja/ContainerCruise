@@ -127,7 +127,9 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Echo env
-        run: echo "Makefile Environment is $envs"
+        run: |
+          make envs
+          echo "Makefile Environment is $envs OR $my-envs"
 
         # For docker image
       # - name: Download artifact

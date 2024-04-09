@@ -37,3 +37,6 @@ image_build:
 
 image_push:
 	docker push ${name}
+
+envs:
+	export my-envs=${envs}
