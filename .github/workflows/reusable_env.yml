@@ -114,7 +114,7 @@ jobs:
     env:
       TF_VAR_environment: ${{inputs.environment}}
       TF_VAR_tag: ${{github.sha}}
-      TF_VAR_profile: "harsh"
+      # TF_VAR_profile: "harsh"
       TF_VAR_region: "us-west-2"
       TF_VAR_account_id: ${{secrets.AWS_ACCOUNT_ID}}
       # TF_VAR_username: ${{secrets.RDS_USERNAME}}
@@ -126,10 +126,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Echo env
-        run: |
-          make envs
-          echo "Makefile Environment is ${{env.myenvs}}"
 
         # For docker image
       # - name: Download artifact
@@ -143,31 +139,31 @@ jobs:
       #     docker load --input /tmp/containercruise.tar
       #     docker image ls -a      
 
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: ${{secrets.OIDC_ROLE}}
-      #     aws-region: us-west-2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.OIDC_ROLE}}
+          aws-region: us-west-2
 
-      # - name: Get Identity
-      #   run: aws sts get-caller-identity
+      - name: Get Identity
+        run: aws sts get-caller-identity
 
         # Using SSM parameter to Set the Environment variables.
-      # - name: Set variables with SSM parameter
-      #   run:  bash ../.github/workflows/ssm.sh
+      - name: Set variables with SSM parameter
+        run:  bash ../.github/workflows/ssm.sh
 
-      # - name: install Terraform
-      #   uses: hashicorp/setup-terraform@v3
+      - name: install Terraform
+        uses: hashicorp/setup-terraform@v3
 
-      # - name: initialize terraform
-      #   run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
+      - name: initialize terraform
+        run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
 
         # Using Composite action for ECR.
-      # - name: Check, Create & Login to ECR.
-      #   id: login-ecr
-      #   uses: ./.github/actions/ecr
-      #   with:
-      #     ecr : $TF_VAR_ecr_repo
+      - name: Check, Create & Login to ECR.
+        id: login-ecr
+        uses: ./.github/actions/ecr
+        with:
+          ecr : $TF_VAR_ecr_repo
 
 
 
@@ -205,8 +201,8 @@ jobs:
       #   if: ${{github.event_name == 'push'}}
       #   run: terraform apply -auto-approve
 
-      # - name: Plan
-      #   run: make Infra_Plan workspace=${{inputs.workspace}} 
+      - name: Plan
+        run: make Infra_Plan workspace=${{inputs.workspace}} 
 
       # - name: Apply Terraform
       #   if: ${{github.event_name == 'push'}}

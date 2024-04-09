@@ -2,7 +2,6 @@
 
 export TF_VAR_profile ?= harshvardhan 
 export TF_VAR_environment=sandbox
-export envs=sandbox-harshvardhan
 
 hello_world:
 	@echo "Hello world"
@@ -37,6 +36,3 @@ image_build:
 
 image_push:
 	docker push ${name}
-
-envs:
-	echo "myenvs=${envs}" >> GITHUB_ENV
