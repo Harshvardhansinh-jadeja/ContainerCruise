@@ -12,9 +12,6 @@ on:
       backend:
         required: true
         type: string
-      envs:
-        required: false
-        type: string
 
     secrets:
       RDS_USERNAME:
@@ -124,7 +121,6 @@ jobs:
       # TF_VAR_password: ${{secrets.RDS_PASSWORD}}
       workspace: ${{inputs.workspace}}
       backend: ${{inputs.backend}} 
-      envs: ${{inputs.envs}}
 
     steps:
       - name: Checkout
@@ -133,7 +129,7 @@ jobs:
       - name: Echo env
         run: |
           make envs
-          echo "Makefile Environment is ${{inputs.envs}} OR ${{env.envs}}"
+          echo "Makefile Environment is ${{env.myenvs}}"
 
         # For docker image
       # - name: Download artifact
