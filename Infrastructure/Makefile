@@ -39,4 +39,4 @@ image_push:
 	docker push ${name}
 
 envs:
-	export myenvs=${envs} >> GITHUB_ENV
+	echo "myenvs=${envs}" >> GITHUB_ENV
