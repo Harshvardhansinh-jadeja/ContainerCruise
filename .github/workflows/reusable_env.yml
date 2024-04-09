@@ -97,8 +97,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build image
-        run: make image_build name=${{env.ECR_REPO}} path="../auth"
+      # - name: Build image
+      #   run: make image_build name=${{env.ECR_REPO}} path="../auth"
         # run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
@@ -120,11 +120,14 @@ jobs:
       # TF_VAR_username: ${{secrets.RDS_USERNAME}}
       # TF_VAR_password: ${{secrets.RDS_PASSWORD}}
       workspace: ${{inputs.workspace}}
-      backend: ${{inputs.backend}}
+      backend: ${{inputs.backend}} 
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Echo env
+        run: echo "Makefile Environment is $envs"
 
         # For docker image
       # - name: Download artifact
@@ -138,31 +141,31 @@ jobs:
       #     docker load --input /tmp/containercruise.tar
       #     docker image ls -a      
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{secrets.OIDC_ROLE}}
-          aws-region: us-west-2
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: ${{secrets.OIDC_ROLE}}
+      #     aws-region: us-west-2
 
-      - name: Get Identity
-        run: aws sts get-caller-identity
+      # - name: Get Identity
+      #   run: aws sts get-caller-identity
 
-        # Using SSM parameter to Set the Environment variables.
-      - name: Set variables with SSM parameter
-        run:  bash ../.github/workflows/ssm.sh
+      #   # Using SSM parameter to Set the Environment variables.
+      # - name: Set variables with SSM parameter
+      #   run:  bash ../.github/workflows/ssm.sh
 
-      - name: install Terraform
-        uses: hashicorp/setup-terraform@v3
+      # - name: install Terraform
+      #   uses: hashicorp/setup-terraform@v3
 
-      - name: initialize terraform
-        run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
+      # - name: initialize terraform
+      #   run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
 
-        # Using Composite action for ECR.
-      - name: Check, Create & Login to ECR.
-        id: login-ecr
-        uses: ./.github/actions/ecr
-        with:
-          ecr : $TF_VAR_ecr_repo
+      #   # Using Composite action for ECR.
+      # - name: Check, Create & Login to ECR.
+      #   id: login-ecr
+      #   uses: ./.github/actions/ecr
+      #   with:
+      #     ecr : $TF_VAR_ecr_repo
 
 
 
@@ -181,12 +184,12 @@ jobs:
 
 
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{env.ECR_REPO}}
-          IMAGE_TAG: ${{github.sha}}
-        run: make docker name=$REGISTRY/$REPOSITORY:$IMAGE_TAG path="../auth"          
+      # - name: Build, tag, and push docker image to Amazon ECR
+      #   env:
+      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     REPOSITORY: ${{env.ECR_REPO}}
+      #     IMAGE_TAG: ${{github.sha}}
+      #   run: make docker name=$REGISTRY/$REPOSITORY:$IMAGE_TAG path="../auth"          
           # docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
           # docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
@@ -200,9 +203,9 @@ jobs:
       #   if: ${{github.event_name == 'push'}}
       #   run: terraform apply -auto-approve
 
-      - name: Plan
-        run: make Infra_Plan workspace=${{inputs.workspace}} 
+      # - name: Plan
+      #   run: make Infra_Plan workspace=${{inputs.workspace}} 
 
-      - name: Apply Terraform
-        if: ${{github.event_name == 'push'}}
-        run: make apply
+      # - name: Apply Terraform
+      #   if: ${{github.event_name == 'push'}}
+      #   run: make apply

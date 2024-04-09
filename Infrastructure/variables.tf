@@ -1,7 +1,7 @@
 # Optional Profile to pass in provider and backend file.
 variable "profile" {
   type    = string
-  default = "harsh"
+  # default = "harsh"
 }
 
 # Region to configure for deploying resources.

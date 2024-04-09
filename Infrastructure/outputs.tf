@@ -3,6 +3,10 @@ output "alb_DNS" {
   value = module.harshvardhan-alb.dns
 }
 
+output "profile" {
+ value= var.profile 
+}
+
 # Public IP of EC2 Instance
 output "bastion_public_IP" {
   value = module.bastion_host.public_ip
