@@ -150,7 +150,8 @@ jobs:
 
         # Using SSM parameter to Set the Environment variables.
       - name: Set variables with SSM parameter
-        run:  bash ../.github/workflows/ssm.sh
+        # run:  bash ../.github/workflows/ssm.sh
+        run:  ssm_env=sandbox make ssm 
 
       - name: install Terraform
         uses: hashicorp/setup-terraform@v3

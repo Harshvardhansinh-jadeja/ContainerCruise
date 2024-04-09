@@ -2,6 +2,7 @@
 
 export TF_VAR_profile ?= harshvardhan 
 export TF_VAR_environment=sandbox
+export ssm_env?=sandboxs
 
 hello_world:
 	@echo "Hello world"
@@ -36,3 +37,6 @@ image_build:
 
 image_push:
 	docker push ${name}
+
+ssm:
+	bash ../.github/workflows/ssm.sh

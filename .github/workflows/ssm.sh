@@ -13,7 +13,7 @@
 
 PARAMS=("username" "password")
 REGION="us-west-2"
-PREFIX="/harshvardhan/sandbox/rds/"
+PREFIX="/harshvardhan/$ssm_env/rds/"
 TFVARS_FILE="terraform.tfvars"
 
 # Getting SSM Parameter and passing it into the tfvars file.
