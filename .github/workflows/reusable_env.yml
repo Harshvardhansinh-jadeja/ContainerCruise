@@ -97,8 +97,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Build image
-      #   run: make image_build name=${{env.ECR_REPO}} path="../auth"
+      - name: Build image
+        run: make image_build name=${{env.ECR_REPO}} path="../auth"
         # run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
@@ -148,7 +148,8 @@ jobs:
       - name: Get Identity
         run: aws sts get-caller-identity
 
-        # Using SSM parameter to Set the Environment variables.
+        # Using SSM parameter to Set the Environment variables. 
+        # REPLACE IT IF YOU WANT TO CHANGE ENV
       - name: Set variables with SSM parameter
         # run:  bash ../.github/workflows/ssm.sh
         run:  ssm_env=sandbox make ssm 
@@ -205,6 +206,6 @@ jobs:
       - name: Plan
         run: make Infra_Plan workspace=${{inputs.workspace}} 
 
-      # - name: Apply Terraform
-      #   if: ${{github.event_name == 'push'}}
-      #   run: make apply
+      - name: Apply Terraform
+        if: ${{github.event_name == 'push'}}
+        run: make apply

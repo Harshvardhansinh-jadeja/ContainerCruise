@@ -1,8 +1,8 @@
 .DEFAULT_GOAL := hello_world
 
-export TF_VAR_profile ?= harshvardhan 
+export TF_VAR_profile?=harshvardhan 
 export TF_VAR_environment=sandbox
-export ssm_env?=sandboxs
+export ssm_env?=sandbox
 
 hello_world:
 	@echo "Hello world"
