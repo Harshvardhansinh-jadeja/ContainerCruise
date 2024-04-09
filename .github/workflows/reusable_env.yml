@@ -129,7 +129,7 @@ jobs:
       - name: Echo env
         run: |
           make envs
-          echo "Makefile Environment is $envs OR $my-envs"
+          echo "Makefile Environment is $envs OR $myenvs"
 
         # For docker image
       # - name: Download artifact
