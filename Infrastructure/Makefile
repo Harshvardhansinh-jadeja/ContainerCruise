@@ -56,7 +56,10 @@ else
 	aws ecr describe-repositories --repository-names $(name) --profile $(profile)
 endif
 
-push: status add commit push
+push: change status add commit push
+
+change:
+	cd ..
 
 status:
 	git status
