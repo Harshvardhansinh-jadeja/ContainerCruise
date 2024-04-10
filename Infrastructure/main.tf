@@ -11,7 +11,7 @@ terraform {
 
 # AWS Provider 
 provider "aws" {
-  profile = var.profile
+  # profile = var.profile
   region  = var.region
   # you can use multiple accounts to access this infastructure using this
   # allowed_account_ids = 

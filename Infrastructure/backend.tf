@@ -7,6 +7,6 @@ terraform {
     key    = "logs/terraform.tfstate"
     region = "us-west-2"
     # profile = "harsh"
-    profile = "harshvardhan"
+    # profile = "harshvardhan"
   }
 } 
