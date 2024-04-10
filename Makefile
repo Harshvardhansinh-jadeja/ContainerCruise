@@ -43,7 +43,7 @@ image_push:
 	docker push ${name}
 
 ssm:
-	bash ../scripts/ssm.sh
+	bash ./scripts/ssm.sh
 
 ssm_param:
 ifeq ($(profile),)
