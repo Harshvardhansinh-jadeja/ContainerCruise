@@ -4,7 +4,7 @@ output "alb_DNS" {
 }
 
 output "profile" {
- value= var.profile 
+  value = var.profile
 }
 
 # Public IP of EC2 Instance

@@ -1,6 +1,6 @@
 # Optional Profile to pass in provider and backend file.
 variable "profile" {
-  type    = string
+  type = string
   # default = "harsh"
 }
 

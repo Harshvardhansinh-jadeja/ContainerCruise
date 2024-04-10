@@ -42,7 +42,7 @@ jobs:
               aws-region: us-west-2
 
           - name: Set Env variables
-            run:  bash ../.github/workflows/ssm.sh
+            run:  bash ../scripts/ssm.sh
         
           - name: Print ENV of user
             run: echo "User is TF_VAR_username ${TF_VAR_username}"
