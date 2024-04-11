@@ -39,4 +39,4 @@ image_push:
 	docker push ${name}
 
 ssm:
-	bash ../.github/workflows/ssm.sh
+	bash ./scripts/ssm.sh
