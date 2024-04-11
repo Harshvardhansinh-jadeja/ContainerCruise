@@ -10,7 +10,7 @@ DOCKER:= auth
 hello_world:
 	@echo "Hello world"
 
-Infra_Plan: workspace format validate plan
+Infra_Plan: workspace format validate 
 
 # init workspace format validate plan apply:
 # 	@cd Infrastructure/

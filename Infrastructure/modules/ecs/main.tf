@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "gen-task-definition" {
     cpu_architecture        = "X86_64"
   }
   execution_role_arn = var.role_arn
-  # task_role_arn      = var.role_arn
+  task_role_arn      = var.role_arn
 }
 
 resource "aws_ecs_service" "gen-service" {
