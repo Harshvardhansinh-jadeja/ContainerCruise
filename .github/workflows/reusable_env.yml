@@ -93,8 +93,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build image
-        run: make image_build name=${{env.ECR_REPO}} path="./auth"
+      # - name: Build image
+      #   run: make image_build name=${{env.ECR_REPO}} path="./auth"
         # run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
@@ -102,9 +102,9 @@ jobs:
     if: ${{ always() && ( needs.Build.result == 'success' && ( needs.path.result == 'skipped' || needs.path.outputs.infra == 'true' )) }}
     environment: ${{inputs.environment}}
 
-    # defaults:
-    #   run:
-    #     working-directory: ./Infrastructure
+    defaults:
+      run:
+        working-directory: ./Infrastructure
     runs-on: ubuntu-latest
 
     env:
@@ -148,6 +148,7 @@ jobs:
         # REPLACE IT IF YOU WANT TO CHANGE ENV
       - name: Set variables with SSM parameter
         # run:  bash ../scripts/ssm.sh
+        working-directory: ../
         run:  ssm_env=${{inputs.environment}} make ssm 
 
       - name: install Terraform
@@ -180,12 +181,12 @@ jobs:
       #   uses: aws-actions/amazon-ecr-login@v2
 
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{env.ECR_REPO}}
-          IMAGE_TAG: ${{github.sha}}
-        run: make docker name=$REGISTRY/$REPOSITORY:$IMAGE_TAG path="./auth"          
+      # - name: Build, tag, and push docker image to Amazon ECR
+      #   env:
+      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     REPOSITORY: ${{env.ECR_REPO}}
+      #     IMAGE_TAG: ${{github.sha}}
+      #   run: make docker name=$REGISTRY/$REPOSITORY:$IMAGE_TAG path="./auth"          
       #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
       #     docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
@@ -200,6 +201,7 @@ jobs:
       #   run: terraform apply -auto-approve
 
       - name: Validate
+        working-directory: ../
         run: make Infra_Plan workspace=${{inputs.workspace}} 
 
       - name: plan
