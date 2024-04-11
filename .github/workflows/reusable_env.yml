@@ -203,6 +203,7 @@ jobs:
         run: make Infra_Plan workspace=${{inputs.workspace}} 
 
       - name: plan
+        working-directory: ./Infrastructure
         run: make plan 
 
       - name: Apply Terraform
