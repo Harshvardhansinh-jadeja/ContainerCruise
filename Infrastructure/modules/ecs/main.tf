@@ -11,6 +11,15 @@ locals {
   environment = flatten([for key, value in var.environment :
     [{
       name      = key
+      value = value
+      }
+  ]])
+}
+
+locals {
+  secret = flatten([for key, value in var.secrets :
+    [{
+      name      = key
       valueFrom = value
       }
   ]])
@@ -24,8 +33,8 @@ resource "aws_ecs_task_definition" "gen-task-definition" {
       name      = var.container-name,
       image     = var.image
       essential = true,
-      # environment : local.environment
-      secrets : local.environment
+      environment : local.environment
+      secrets : local.secret
       # environment: var.environment
       portMappings = [
         {

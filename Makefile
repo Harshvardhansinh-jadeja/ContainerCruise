@@ -16,47 +16,46 @@ Infra_Plan: workspace format validate plan
 # 	@cd Infrastructure/
 
 init:
-	cd $(INFRA) && terraform init
+	@cd $(INFRA) && terraform init
 
 workspace : 
-	cd $(INFRA) && terraform workspace select ${workspace} 
+	@cd $(INFRA) && terraform workspace select ${workspace} 
 
 format:
-	cd $(INFRA) && terraform fmt -recursive
+	@cd $(INFRA) && terraform fmt -recursive
 
 validate:
-	cd $(INFRA) && terraform validate
-pwd:
-	pwd
+	@cd $(INFRA) && terraform validate
+
 plan:
-	cd $(INFRA) && terraform plan
+	@cd $(INFRA) && terraform plan
 
 apply:
-	cd $(INFRA) && terraform apply -auto-approve
+	@cd $(INFRA) && terraform apply -auto-approve
 
 docker: image_build image_push
 
 image_build:
-	docker build -t ${name} ${path}
+	@docker build -t ${name} ${path}
 
 image_push:
-	docker push ${name}
+	@docker push ${name}
 
 ssm:
-	bash ./scripts/ssm.sh
+	@bash ./scripts/ssm.sh
 
 ssm_param:
 ifeq ($(profile),)
-	aws --region=us-west-2 ssm get-parameter --name ${ssm_prefix}${param} --with-decryption --output text --query Parameter.Value 
+	@aws --region=us-west-2 ssm get-parameter --name ${ssm_prefix}${param} --with-decryption --output text --query Parameter.Value 
 else
-	aws --region=us-west-2 --profile $(profile) ssm get-parameter --name ${ssm_prefix}${param} --with-decryption --output text --query Parameter.Value
+	@aws --region=us-west-2 --profile $(profile) ssm get-parameter --name ${ssm_prefix}${param} --with-decryption --output text --query Parameter.Value
 endif
 
 ecr:
 ifeq ($(profile),)
-	aws ecr describe-repositories --repository-names $(name)
+	@aws ecr describe-repositories --repository-names $(name)
 else
-	aws ecr describe-repositories --repository-names $(name) --profile $(profile)
+	@aws ecr describe-repositories --repository-names $(name) --profile $(profile)
 endif
 
 push: status add commit git_push

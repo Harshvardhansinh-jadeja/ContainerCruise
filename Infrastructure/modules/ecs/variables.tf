@@ -63,3 +63,6 @@ variable "environment" {
 #   }))
 #   default = []
 # }
+variable "secrets" {
+  default = null
+}
