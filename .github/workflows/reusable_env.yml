@@ -88,9 +88,9 @@ jobs:
     needs: path
     environment: ${{inputs.environment}}
 
-    defaults:
-      run:
-        working-directory: ./Infrastructure
+    # defaults:
+    #   run:
+    #     working-directory: ./Infrastructure
 
     runs-on: ubuntu-latest
     steps:
