@@ -10,7 +10,7 @@ DOCKER:= auth
 hello_world:
 	@echo "Hello world"
 
-Infra_Plan: workspace format validate plan 
+Infra_Plan: workspace format validate plan
 
 # init workspace format validate plan apply:
 # 	@cd Infrastructure/
@@ -19,19 +19,19 @@ init:
 	@cd $(INFRA) && terraform init
 
 workspace : 
-	@cd $(INFRA) && terraform workspace select ${workspace} 
+	cd $(INFRA) && terraform workspace select ${workspace} 
 
 format:
-	@cd $(INFRA) && terraform fmt -recursive
+	cd $(INFRA) && terraform fmt -recursive
 
 validate:
-	@cd $(INFRA) && terraform validate
+	cd $(INFRA) && terraform validate
 
 plan:
-	@cd $(INFRA) && terraform plan
+	cd $(INFRA) && terraform plan
 
 apply:
-	@cd $(INFRA) && terraform apply -auto-approve
+	cd $(INFRA) && terraform apply -auto-approve
 
 docker: image_build image_push
 

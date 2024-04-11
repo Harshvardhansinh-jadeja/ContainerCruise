@@ -4,5 +4,5 @@ locals {
 }
 
 locals {
-  image =  "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.ecr_repo}:${var.tag}"
+  image = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.ecr_repo}:${var.tag}"
 }
