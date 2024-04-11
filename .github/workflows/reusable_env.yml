@@ -204,6 +204,7 @@ jobs:
       #   run: terraform apply -auto-approve
 
       - name: Plan
+        working-directory: .
         run: make Infra_Plan workspace=${{inputs.workspace}} 
 
       # - name: Apply Terraform
