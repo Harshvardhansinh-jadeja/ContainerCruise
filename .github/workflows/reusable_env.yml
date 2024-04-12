@@ -88,17 +88,13 @@ jobs:
     needs: path
     environment: ${{inputs.environment}}
 
-    # defaults:
-    #   run:
-    #     working-directory: ./Infrastructure
-
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Build image
-      #   run: make image_build name=${{env.ECR_REPO}} path="./auth"
+      - name: Build image
+        run: make image_build name=${{env.ECR_REPO}} path="./auth"
         # run: docker build -t ${{env.ECR_REPO}}-repo .
 
   Deploy:
@@ -106,9 +102,9 @@ jobs:
     if: ${{ always() && ( needs.Build.result == 'success' && ( needs.path.result == 'skipped' || needs.path.outputs.infra == 'true' )) }}
     environment: ${{inputs.environment}}
 
-    defaults:
-      run:
-        working-directory: ./Infrastructure
+    # defaults:
+    #   run:
+    #     working-directory: ./Infrastructure
     runs-on: ubuntu-latest
 
     env:
@@ -151,14 +147,14 @@ jobs:
         # Using SSM parameter to Set the Environment variables. 
         # REPLACE IT IF YOU WANT TO CHANGE ENV
       - name: Set variables with SSM parameter
-        # run:  bash ../.github/workflows/ssm.sh
-        working-directory: .
+        # run:  bash ../scripts/ssm.sh
         run:  ssm_env=${{inputs.environment}} make ssm 
 
       - name: install Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: initialize terraform
+        working-directory: ./Infrastructure
         run: terraform init -backend-config=${{inputs.environment}}.s3.tfbackend
 
         # Using Composite action for ECR.
@@ -189,7 +185,7 @@ jobs:
       #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       #     REPOSITORY: ${{env.ECR_REPO}}
       #     IMAGE_TAG: ${{github.sha}}
-      #   run: make docker name=$REGISTRY/$REPOSITORY:$IMAGE_TAG path="../auth"          
+      #   run: make docker name=$REGISTRY/$REPOSITORY:$IMAGE_TAG path="./auth"          
       #     docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ../auth
       #     docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
@@ -203,10 +199,9 @@ jobs:
       #   if: ${{github.event_name == 'push'}}
       #   run: terraform apply -auto-approve
 
-      - name: Plan
-        working-directory: .
+      - name: Validate
         run: make Infra_Plan workspace=${{inputs.workspace}} 
 
-      # - name: Apply Terraform
-      #   if: ${{github.event_name == 'push'}}
-      #   run: make apply
+      - name: Apply Terraform
+        if: ${{github.event_name == 'push'}}
+        run: make apply
