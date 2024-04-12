@@ -16,22 +16,22 @@ Infra_Plan: workspace format validate plan
 # 	@cd Infrastructure/
 
 init:
-	@cd $(INFRA) && terraform init
+	terraform init
 
 workspace : 
-	cd $(INFRA) && terraform workspace select ${workspace} 
+	terraform workspace select ${workspace} 
 
 format:
-	cd $(INFRA) && terraform fmt -recursive
+	terraform fmt -recursive
 
 validate:
-	cd $(INFRA) && terraform validate
+	terraform validate
 
 plan:
-	cd $(INFRA) && terraform plan
+	terraform plan
 
 apply:
-	cd $(INFRA) && terraform apply -auto-approve
+	 terraform apply -auto-approve
 
 docker: image_build image_push
 
