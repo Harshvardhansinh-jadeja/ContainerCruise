@@ -1,48 +1,72 @@
 .DEFAULT_GOAL := hello_world
 
-# export TF_VAR_profile
+export TF_VAR_profile?=harshvardhan 
 export TF_VAR_environment=sandbox
 export ssm_env?=sandbox
-export ssm_prefix?=/harshvardhan/${ssm_env}/rds/
 INFRA:= Infrastructure
-DOCKER:= auth
 
 hello_world:
 	@echo "Hello world"
 
 Infra_Plan: workspace format validate plan 
 
-# init workspace format validate plan apply:
-# 	@cd Infrastructure/
+destroy:
+	terraform destroy -auto-approve
+
+init_backend:
+	cd Infrastructure; \
+	terraform init -backend-config="$(backend).s3.tfbackend"
 
 init:
 	terraform init
 
 workspace : 
+	cd Infrastructure; \
 	terraform workspace select ${workspace} 
 
+plan:
+	cd Infrastructure; \
+	terraform plan;
+
+	# cd Infrastructure; \
+	# ls -lart; \
+	# rm -rf .terraform*; \
+	# ls -lart; \
+	# terraform init -backend-config="$(backend).s3.tfbackend"; \
+	# ls -lart; \
+	# pwd; \
+	# sleep 10; \
+	# terraform state list; \
+	# # terraform destroy; \
+	# terraform apply -auto-approve
+
+apply:
+	cd Infrastructure; \
+	terraform apply -auto-approve
+
+target:
+	cd Infrastructure; \
+	terraform apply -target=${resource} -auto-approve
+
 format:
+	cd Infrastructure; \
 	terraform fmt -recursive
 
 validate:
+	cd Infrastructure; \
 	terraform validate
-
-plan:
-	terraform plan
-
-apply:
-	 terraform apply -auto-approve
 
 docker: image_build image_push
 
 image_build:
-	@docker build -t ${name} ${path}
+	docker build -t ${name} ${path}
 
 image_push:
-	@docker push ${name}
+	docker push ${name}
 
 ssm:
-	@bash ./scripts/ssm.sh
+	bash ./scripts/ssm.sh
+
 
 ssm_param:
 ifeq ($(profile),)
@@ -57,17 +81,3 @@ ifeq ($(profile),)
 else
 	@aws ecr describe-repositories --repository-names $(name) --profile $(profile)
 endif
-
-push: status add commit git_push
-
-status:
-	git status
-
-add:
-	git add .
-
-commit:
-	git commit -m "$(message)"
-
-git_push:
-	git push origin $(branch)

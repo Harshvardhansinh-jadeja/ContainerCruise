@@ -1,8 +1,9 @@
-
 variable "name" {
+  default = "sandbox-repo-my"
   type = string
 }
 variable "force_delete" {
+  default = false
   type = bool
 }
 
@@ -23,4 +24,3 @@ variable "force_delete" {
 # variable "repo_url" {
 #     type = string
 # }
-
