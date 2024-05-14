@@ -6,7 +6,6 @@ terraform {
     # bucket = "harshvardhan-tfstates"
     key = "logs/terraform.tfstate"
     region =  "us-west-2"
-    # profile = "harsh"
     # profile = "harshvardhan"
   }
 } 
