@@ -10,7 +10,10 @@ from diagrams.aws.integration import SimpleNotificationServiceSnsEmailNotificati
 
 graph_attr = {
     "fontsize": "30",
-    "bgcolor": "transparent"
+    "bgcolor": "transparent",
+    "pad": "0.5",
+    "nodesep" : "2", 
+    "ranksep":"1"
 }
 
 edge_attr = {
