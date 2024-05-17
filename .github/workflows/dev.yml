@@ -18,9 +18,9 @@ jobs:
 
     uses: ./.github/workflows/reusable_env.yml
     with:
-      environment: "dev"
+      environment: "harshvardhan-sandbox"
       workspace: "default"
-      backend: "dev"
+      backend: "sandbox"
 
     secrets:
       RDS_USERNAME: ${{secrets.RDS_USERNAME}}

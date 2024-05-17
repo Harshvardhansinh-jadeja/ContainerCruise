@@ -2,8 +2,8 @@
 terraform {
   backend "s3" {
    # for personal
-    bucket = "harshvardhan-tfstate"
-    # bucket = "harshvardhan-tfstates"
+    # bucket = "harshvardhan-tfstate"
+    bucket = "harshvardhan-tfstates"
     key = "logs/terraform.tfstate"
     region =  "us-west-2"
     # profile = "harshvardhan"
