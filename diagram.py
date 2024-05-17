@@ -31,8 +31,7 @@ with Diagram("Containerized Application",outformat="jpg",show=False,graph_attr=g
         bastion = EC2("Bastion Host")
       with Cluster("Private Subnet"):
         rds = RDSInstance("Database")
-        ecs= ECS("ECS", height="1.5", width="1.5",fontsize="15")
-            
+        ecs= ECS("ECS", width="1.5",fontsize="15")            
 
         users>>alb>>ecs
         ecs-rds
