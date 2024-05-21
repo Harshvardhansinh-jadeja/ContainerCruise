@@ -11,33 +11,35 @@ from diagrams.aws.integration import SimpleNotificationServiceSnsEmailNotificati
 graph_attr = {
     "fontsize": "30",
     "bgcolor": "transparent",
-    "pad": "0.5",
-    "nodesep" : "2", 
+    "pad": "1",
+    "nodesep" : "1.5", 
     "ranksep":"1"
 }
 
 edge_attr = {
-    "minlen": "2.0",
-    "penwidth":"3.0",
-    "concentrate": "true"
+    "minlen": "2",
+    "penwidth":"2.0",
+    "concentrate": "true",
+    "labeldistance" : "5.0"
 }
 
 with Diagram("Containerized Application",outformat="jpg",show=False,graph_attr=graph_attr,edge_attr=edge_attr):
    users=Users("End User") 
-   alb=ALB("Application Load Balancer")
    ecr= EC2ContainerRegistry("ECR")
    cloudwatch= CloudwatchAlarm("5XX Error")
    cloudwatch>>SimpleNotificationServiceSnsEmailNotification("Email")
 
    with Cluster("VPC"):
       with Cluster("Public Subnet"):
-        bastion = EC2("Bastion Host")
+       alb=ALB("ALB")
+       bastion = EC2("Bastion Host")   
+
       with Cluster("Private Subnet"):
         rds = RDSInstance("Database")
-        ecs= ECS("ECS", width="1.5",fontsize="15")            
-
+        ecs= ECS("ECS", width="1.5",fontsize="15")   
+              
         users>>alb>>ecs
         ecs-rds
         ecs<<ecr
         ecs>>cloudwatch
-        bastion>>Edge(label="Private Connection")>>rds
+        bastion>>Edge(label="Private conn.")>>rds
